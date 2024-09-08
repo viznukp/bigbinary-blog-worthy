@@ -2,6 +2,7 @@
 
 class PostsController < ApplicationController
   def index
-    render html: "This is from PostsController "
+    posts = Post.all
+    render status: :ok, json: { posts: }
   end
 end
