@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
 
-import Logger from "js-logger";
 import { isNil, isEmpty, either } from "ramda";
 
 import postsApi from "apis/posts";
-import Posts from "components/Posts";
 
-import Container from "../commons/Container";
+import Card from "./Card";
+
 import PageLoader from "../commons/PageLoader";
 
-const Dashboard = () => {
+const List = ({ handlePostClick, setSelectedPost }) => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -20,7 +19,7 @@ const Dashboard = () => {
       } = await postsApi.fetch();
       setPosts(posts);
     } catch (error) {
-      Logger.error(error);
+      logger.error(error);
     } finally {
       setLoading(false);
     }
@@ -40,19 +39,24 @@ const Dashboard = () => {
 
   if (either(isNil, isEmpty)(posts)) {
     return (
-      <Container>
-        <h1 className="my-5 text-center text-xl leading-5">
-          You have not created any posts.
-        </h1>
-      </Container>
+      <h1 className="my-12 text-center text-xl leading-5">
+        No posts yet. Share something exciting!
+      </h1>
     );
   }
 
   return (
-    <Container>
-      <Posts posts={posts} />
-    </Container>
+    <div className="mt-6 flex flex-col gap-2">
+      {posts.map(post => (
+        <Card
+          data={post}
+          handlePostClick={handlePostClick}
+          key={post.id}
+          setSelectedPost={setSelectedPost}
+        />
+      ))}
+    </div>
   );
 };
 
-export default Dashboard;
+export default List;
