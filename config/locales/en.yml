@@ -30,4 +30,5 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  successfully_created: "Task was successfully created!"
+  generic_error: "Something went wrong. Please try again later."

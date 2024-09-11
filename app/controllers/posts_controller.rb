@@ -19,7 +19,7 @@ class PostsController < ApplicationController
   def create
     post = Post.new(post_params)
     post.save!
-    render status: :ok, json: { notice: "Post created successfully" }
+    render_notice(t("successfully_created"))
   end
 
   private
