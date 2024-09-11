@@ -7,7 +7,7 @@ import { PageLoader } from "components/commons";
 
 import Card from "./Card";
 
-const List = ({ handlePostClick, setSelectedPost }) => {
+const List = ({ needReload }) => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -26,7 +26,7 @@ const List = ({ handlePostClick, setSelectedPost }) => {
 
   useEffect(() => {
     fetchPosts();
-  }, []);
+  }, [needReload]);
 
   if (loading) {
     return (
@@ -47,12 +47,7 @@ const List = ({ handlePostClick, setSelectedPost }) => {
   return (
     <div className="mt-6 flex flex-col gap-2">
       {posts.map(post => (
-        <Card
-          data={post}
-          handlePostClick={handlePostClick}
-          key={post.id}
-          setSelectedPost={setSelectedPost}
-        />
+        <Card data={post} key={post.id} />
       ))}
     </div>
   );

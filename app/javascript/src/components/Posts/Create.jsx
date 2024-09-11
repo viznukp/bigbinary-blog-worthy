@@ -2,22 +2,19 @@ import React, { useState } from "react";
 
 import { Pane, Button } from "@bigbinary/neetoui";
 import { Form as NeetoUIForm } from "@bigbinary/neetoui/formik";
-// import { useHistory } from "react-router-dom";
 
 import postsApi from "apis/posts";
 
 import Form from "./Form";
 
-const Create = () => {
+const Create = ({ reload }) => {
   const [isPaneOpen, setIsPaneOpen] = useState(false);
-  // const history = useHistory();
 
   const handleSubmit = async payload => {
     try {
       await postsApi.create({ post: payload });
       setIsPaneOpen(false);
-      // history.push("/home");
-      window.location.reload();
+      reload();
     } catch (error) {
       logger.error(error);
     }

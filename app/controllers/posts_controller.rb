@@ -2,19 +2,24 @@
 
 class PostsController < ApplicationController
   def index
-    posts = Post.all
-    render status: :ok, json: { posts: }
+    posts = Post.includes(:user)
+    formatted_posts = posts.map do |post|
+      post.attributes.merge(
+        {
+          author: {
+            id: post.user.id,
+            name: post.user.name
+          }
+        }
+      )
+    end
+    render status: :ok, json: { posts: formatted_posts }
   end
 
   def create
     post = Post.new(post_params)
     post.save!
     render status: :ok, json: { notice: "Post created successfully" }
-  end
-
-  def show
-    post = Post.find_by!(id: params[:id])
-    render status: :ok, json: { post: }
   end
 
   private

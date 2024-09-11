@@ -4,26 +4,18 @@ import { Container, PageTitle } from "components/commons";
 
 import Create from "./Create";
 import List from "./List";
-import Show from "./Show";
 
 const Posts = () => {
-  const [isPostClicked, setIsPostClicked] = useState(false);
-  const [selectedPost, setSelectedPost] = useState(undefined);
+  const [needPostReload, setNeedPostReload] = useState(true);
+
+  const reload = () => setNeedPostReload(prevValue => !prevValue);
 
   return (
     <Container>
       <PageTitle title="Posts">
-        <Create />
+        <Create reload={reload} />
       </PageTitle>
-      <List
-        handlePostClick={setIsPostClicked}
-        setSelectedPost={setSelectedPost}
-      />
-      <Show
-        isOpen={isPostClicked}
-        postId={selectedPost}
-        setIsPostClicked={setIsPostClicked}
-      />
+      <List needReload={needPostReload} />
     </Container>
   );
 };
