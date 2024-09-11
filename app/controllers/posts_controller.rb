@@ -2,18 +2,18 @@
 
 class PostsController < ApplicationController
   def index
-    posts = Post.includes(:user)
-    formatted_posts = posts.map do |post|
-      post.attributes.merge(
-        {
-          author: {
-            id: post.user.id,
-            name: post.user.name
-          }
-        }
-      )
-    end
-    render status: :ok, json: { posts: formatted_posts }
+    @posts = Post.includes(:user)
+    # formatted_posts = posts.map do |post|
+    #   post.attributes.merge(
+    #     {
+    #       author: {
+    #         id: post.user.id,
+    #         name: post.user.name
+    #       }
+    #     }
+    #   )
+    # end
+    # render status: :ok, json: { posts: formatted_posts }
   end
 
   def create
