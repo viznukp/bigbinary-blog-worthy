@@ -3,10 +3,9 @@ import React, { useState, useEffect } from "react";
 import { isNil, isEmpty, either } from "ramda";
 
 import postsApi from "apis/posts";
+import { PageLoader } from "components/commons";
 
 import Card from "./Card";
-
-import PageLoader from "../commons/PageLoader";
 
 const List = ({ handlePostClick, setSelectedPost }) => {
   const [posts, setPosts] = useState([]);

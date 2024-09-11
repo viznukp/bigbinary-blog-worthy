@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 
+import { Container, PageTitle } from "components/commons";
+
 import Create from "./Create";
 import List from "./List";
 import Show from "./Show";
-
-import Container from "../commons/Container";
-import PageTitle from "../commons/PageTitle";
 
 const Posts = () => {
   const [isPostClicked, setIsPostClicked] = useState(false);

@@ -1,7 +1,5 @@
 import React from "react";
 
-// import { List } from "@bigbinary/neeto-icons";
-
 import BlogWorthyLogo from "./BlogWorthyLogo";
 import SideBarNavItem from "./SideBarNavItem";
 
