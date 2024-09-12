@@ -30,5 +30,5 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
-  successfully_created: "Task was successfully created!"
+  successfully_created: "%{entity} was successfully created!"
   generic_error: "Something went wrong. Please try again later."
