@@ -7,7 +7,7 @@ json.posts @posts do |post|
     :downvotes
 
   json.author do
-    json.extract! @current_user,
+    json.extract! post.user,
       :id,
       :name
   end

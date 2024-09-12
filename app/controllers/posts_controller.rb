@@ -2,7 +2,8 @@
 
 class PostsController < ApplicationController
   def index
-    @posts = Post.where(user_id: @current_user.id)
+    @posts = Post.joins(user: :organization)
+             .where(users: { organization_id: @current_user.organization_id })
   end
 
   def create
@@ -14,6 +15,8 @@ class PostsController < ApplicationController
   private
 
     def post_params
-      params.require(:post).permit(:title, :description).merge(user_id: @current_user.id)
+      params.require(:post)
+        .permit(:title, :description)
+        .merge(user_id: @current_user.id)
     end
 end
