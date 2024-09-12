@@ -22,11 +22,8 @@ const Login = ({ handleSubmit, loading }) => (
         className="mt-8 flex flex-col gap-y-6"
         formikProps={{
           initialValues: {
-            name: "Oliver",
-            email: "oliver@example.com",
-            password: "welcome",
-            passwordConfirmation: "welcome",
-            organization: 1,
+            email: "",
+            password: "",
           },
           onSubmit: handleSubmit,
         }}

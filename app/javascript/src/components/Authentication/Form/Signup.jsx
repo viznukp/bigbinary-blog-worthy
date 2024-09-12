@@ -30,11 +30,11 @@ const Signup = ({ organizations, handleSubmit, loading }) => (
         className="mt-8 flex flex-col gap-y-6"
         formikProps={{
           initialValues: {
-            name: "Oliver",
-            email: "oliver@example.com",
-            password: "welcome",
-            passwordConfirmation: "welcome",
-            organization: 1,
+            name: "",
+            email: "",
+            password: "",
+            passwordConfirmation: "",
+            organization: "",
           },
           onSubmit: handleSubmit,
         }}
