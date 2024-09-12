@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 class UsersController < ApplicationController
+  skip_before_action :authenticate_user_using_x_auth_token, only: :create
+
   def create
-    user = User.new(user_params)
+    user = User.new(user_params, @current_user)
     user.save!
     render_notice(t("successfully_created", entity: "User"))
   end

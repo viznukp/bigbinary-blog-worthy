@@ -6,7 +6,7 @@ import SignupForm from "components/Authentication/Form/Signup";
 
 const Signup = ({ history }) => {
   const [loading, setLoading] = useState(false);
-  const [organizationsList, setOrganizationsList] = useState();
+  const [organizationsList, setOrganizationsList] = useState([]);
 
   const fetchOrganizations = async () => {
     try {
