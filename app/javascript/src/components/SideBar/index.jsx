@@ -12,6 +12,7 @@ import SideBarNavItem from "./SideBarNavItem";
 
 const SideBar = () => {
   const userName = getFromLocalStorage("authUserName");
+  const userEmail = getFromLocalStorage("authEmail");
 
   const handleLogout = async () => {
     try {
@@ -39,7 +40,10 @@ const SideBar = () => {
         className="flex h-12 w-12 flex-col items-center justify-center rounded-full bg-gray-200 transition-all duration-300 hover:bg-gray-300"
         icon="user-fill"
       >
-        <Typography className="border-b">{userName}</Typography>
+        <Typography className="">{userName}</Typography>
+        <Typography className="border-b" style="body3">
+          {userEmail}
+        </Typography>
         <Button
           fullWidth
           label="Logout"
