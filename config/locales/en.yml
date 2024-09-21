@@ -30,6 +30,8 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
+  authorization:
+    denied: "Access denied. You are not authorized to perform this action."
   post:
     slug:
       immutable: "is immutable!"
