@@ -21,7 +21,7 @@ const Form = ({ handleCancel }) => (
     />
     <div className="flex gap-2">
       <Button label="Create" type="submit" />
-      <Button label="Cancel" style="danger" onClick={() => handleCancel()} />
+      <Button label="Cancel" style="danger" onClick={handleCancel} />
     </div>
   </div>
 );

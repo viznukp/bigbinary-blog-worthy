@@ -6,7 +6,7 @@ import { ToastContainer } from "react-toastify";
 
 import { Signup, Login } from "components/Authentication";
 import { PrivateRoute } from "components/commons";
-import Posts from "components/Posts";
+import Home from "components/Home";
 import { getFromLocalStorage } from "utils/storage";
 
 const App = () => {
@@ -20,7 +20,7 @@ const App = () => {
         <Route exact component={Signup} path="/signup" />
         <Route exact component={Login} path="/login" />
         <PrivateRoute
-          component={Posts}
+          component={Home}
           condition={isLoggedIn}
           path="/"
           redirectRoute="/login"

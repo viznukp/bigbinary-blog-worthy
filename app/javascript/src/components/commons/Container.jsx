@@ -8,7 +8,7 @@ import SideBar from "../SideBar";
 const Container = ({ children, className = "" }) => (
   <div className="flex h-screen">
     <SideBar />
-    <div className="w-full justify-center">
+    <div className="w-full justify-center overflow-y-scroll">
       <div className={classnames("mx-auto max-w-6xl px-6", [className])}>
         {children}
       </div>

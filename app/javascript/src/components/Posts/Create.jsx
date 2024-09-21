@@ -7,14 +7,14 @@ import postsApi from "apis/posts";
 
 import Form from "./Form";
 
-const Create = ({ reload }) => {
+const Create = ({ reloadPosts }) => {
   const [isPaneOpen, setIsPaneOpen] = useState(false);
 
   const handleSubmit = async payload => {
     try {
       await postsApi.create({ post: payload });
       setIsPaneOpen(false);
-      reload();
+      reloadPosts();
     } catch (error) {
       logger.error(error);
     }
