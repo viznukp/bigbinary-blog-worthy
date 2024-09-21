@@ -1,10 +1,11 @@
+# frozen_string_literal: true
+
 json.posts @posts do |post|
   json.extract! post,
     :id,
     :title,
     :description,
-    :upvotes,
-    :downvotes
+    :slug
 
   json.author do
     json.extract! post.user,

@@ -27,9 +27,9 @@ const Card = ({ data }) => {
       </div>
       {isPostClicked && (
         <Show
-          data={data}
-          isPostClicked={isPostClicked}
-          setIsPostClicked={setIsPostClicked}
+          isModalOpen={isPostClicked}
+          setIsModalOpen={setIsPostClicked}
+          slug={data.slug}
         />
       )}
     </>

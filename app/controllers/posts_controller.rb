@@ -12,6 +12,10 @@ class PostsController < ApplicationController
     render_notice(t("successfully_created", entity: "Post"))
   end
 
+  def show
+    @post = Post.includes(:user).find_by!(slug: params[:slug])
+  end
+
   private
 
     def post_params
