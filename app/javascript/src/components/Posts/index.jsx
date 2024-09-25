@@ -40,24 +40,22 @@ const Posts = () => {
     );
   }
 
-  if (either(isNil, isEmpty)(posts)) {
-    return (
-      <h1 className="my-12 text-center text-xl leading-5">
-        No posts yet. Share something exciting!
-      </h1>
-    );
-  }
-
   return (
     <>
       <PageTitle title="Posts">
         <Create reloadPosts={reloadPosts} />
       </PageTitle>
-      <div className="mt-6 flex flex-col gap-2">
-        {posts.map(post => (
-          <Card data={post} key={post.id} />
-        ))}
-      </div>
+      {either(isNil, isEmpty)(posts) ? (
+        <h1 className="my-12 text-center text-xl leading-5">
+          No posts yet. Share something exciting!
+        </h1>
+      ) : (
+        <div className="mt-4 flex flex-col gap-2">
+          {posts.map(post => (
+            <Card data={post} key={post.id} reloadPosts={reloadPosts} />
+          ))}
+        </div>
+      )}
     </>
   );
 };

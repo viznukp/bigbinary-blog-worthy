@@ -15,6 +15,11 @@ class Post < ApplicationRecord
 
   before_create :set_slug
 
+  def is_blog_worthy?
+    net_votes = self.upvotes - self.downvotes
+    net_votes > Constants::BLOG_WORTHY_THRESHOLD
+  end
+
   private
 
     def non_negative_net_votes
@@ -32,12 +37,14 @@ class Post < ApplicationRecord
         regex_pattern,
         "^#{title_slug}$|^#{title_slug}-[0-9]+$"
       ).order("LENGTH(slug) DESC", slug: :desc).first&.slug
+
       slug_count = 0
       if latest_post_slug.present?
         slug_count = latest_post_slug.split("-").last.to_i
         only_one_slug_exists = slug_count == 0
         slug_count = 1 if only_one_slug_exists
       end
+
       slug_candidate = slug_count.positive? ? "#{title_slug}-#{slug_count + 1}" : title_slug
       self.slug = slug_candidate
     end

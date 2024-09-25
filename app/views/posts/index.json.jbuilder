@@ -3,9 +3,12 @@
 json.posts @posts do |post|
   json.extract! post,
     :id,
+    :slug,
     :title,
     :description,
-    :slug
+    :upvotes,
+    :downvotes,
+    :is_blog_worthy
 
   json.author do
     json.extract! post.user,

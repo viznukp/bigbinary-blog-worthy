@@ -8,7 +8,7 @@ class PostPolicy
     @post = post
   end
 
-  def create
+  def create?
     true
   end
 
