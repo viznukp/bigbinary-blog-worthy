@@ -12,6 +12,14 @@ class PostPolicy
     true
   end
 
+  def show?
+    post.author.organization_id == user.organization_id
+  end
+
+  def update?
+    post.author_id == user.id
+  end
+
   class Scope
     attr_reader :user, :scope
 
@@ -21,7 +29,13 @@ class PostPolicy
     end
 
     def resolve
-      scope.joins(:user).where(users: { organization_id: user.organization_id })
+      scope.includes(:author).where(usersInSameOrganizationAsCurrentUser)
     end
+
+    private
+
+      def usersInSameOrganizationAsCurrentUser
+        { users: { organization_id: user.organization_id } }
+      end
   end
 end

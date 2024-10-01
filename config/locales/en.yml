@@ -32,6 +32,7 @@
 en:
   authorization:
     denied: "Access denied. You are not authorized to perform this action."
+  not_found: "Couldn't find %{entity}"
   post:
     slug:
       immutable: "is immutable!"

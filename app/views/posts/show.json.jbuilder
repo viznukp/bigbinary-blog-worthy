@@ -5,7 +5,7 @@ json.post do
     :description
 
   json.author do
-    json.extract! @post.user,
+    json.extract! @post.author,
       :id,
       :name
   end

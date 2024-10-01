@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 class PostsController < ApplicationController
-  before_action :load_post, only: :update
+  before_action :load_post, only: %i[update show]
 
+  after_action :verify_authorized, except: :index
   after_action :verify_policy_scoped, only: :index
   after_action :update_blogworthy_status, only: :update
 
@@ -18,26 +19,29 @@ class PostsController < ApplicationController
   end
 
   def show
-    @post = Post.includes(:user).find_by!(slug: params[:slug])
+    authorize @post
   end
 
   def update
+    authorize @post
     @post.update!(post_params)
   end
 
   private
 
     def post_params
-      permitted = [:title, :description]
-      permitted << :upvotes << :downvotes if action_name == "update"
+      permitted_params = [:title, :description]
+      permitted_params << :upvotes << :downvotes if action_name == "update"
 
       params.require(:post)
-        .permit(*permitted)
-        .merge(user_id: @current_user.id)
+        .permit(*permitted_params)
+        .merge(author_id: @current_user.id)
     end
 
     def load_post
-      @post = Post.find_by!(slug: params[:slug])
+      @post = action_name == "show" ?
+        Post.includes(:author).find_by!(slug: params[:slug]) :
+        Post.find_by!(slug: params[:slug])
     end
 
     def update_blogworthy_status

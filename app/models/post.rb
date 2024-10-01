@@ -3,7 +3,7 @@
 class Post < ApplicationRecord
   MAX_TITLE_LENGTH = 125
 
-  belongs_to :user
+  belongs_to :author, foreign_key: "author_id", class_name: "User"
 
   validates :title,
     presence: true,
