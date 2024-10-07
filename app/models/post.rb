@@ -2,12 +2,14 @@
 
 class Post < ApplicationRecord
   MAX_TITLE_LENGTH = 125
+  VALID_TITLE_REGEX = /\A.*[a-zA-Z0-9].*\z/i
 
   belongs_to :author, foreign_key: "author_id", class_name: "User"
 
   validates :title,
     presence: true,
-    length: { maximum: MAX_TITLE_LENGTH }
+    length: { maximum: MAX_TITLE_LENGTH },
+    format: { with: VALID_TITLE_REGEX }
   validates_inclusion_of :is_blog_worthy, in: [true, false]
   validates :slug, uniqueness: true
   validate :slug_not_changed
