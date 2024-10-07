@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useRef } from "react";
 
-import { Button, Typography } from "@bigbinary/neetoui";
+import { Button, Typography, Avatar, Popover } from "@bigbinary/neetoui";
 import { resetAuthTokens } from "src/apis/axios";
 
 import authApi from "apis/auth";
-import { Popover } from "components/commons";
 import { getFromLocalStorage, setToLocalStorage } from "utils/storage";
 
 import BlogWorthyLogo from "./BlogWorthyLogo";
@@ -13,6 +12,7 @@ import SideBarNavItem from "./SideBarNavItem";
 const SideBar = () => {
   const userName = getFromLocalStorage("authUserName");
   const userEmail = getFromLocalStorage("authEmail");
+  const avatarRef = useRef();
 
   const handleLogout = async () => {
     try {
@@ -31,8 +31,8 @@ const SideBar = () => {
   };
 
   return (
-    <div className="flex w-16 flex-col items-center justify-between space-y-4 border-r border-gray-300 px-10 pb-4">
-      <div className="flex flex-col items-center gap-3">
+    <div className="flex w-16 flex-col items-center space-y-4 border-r border-gray-300 px-10 pb-4">
+      <div className="flex flex-1 flex-col items-center">
         <BlogWorthyLogo className="mt-4" height={64} width={64} />
         <SideBarNavItem
           className="mt-6"
@@ -41,21 +41,23 @@ const SideBar = () => {
           url="/"
         />
       </div>
-      <Popover
-        className="flex h-12 w-12 flex-col items-center justify-center rounded-full bg-gray-200 transition-all duration-300 hover:bg-gray-300"
-        icon="user-fill"
-      >
-        <Typography className="">{userName}</Typography>
-        <Typography className="border-b" style="body3">
-          {userEmail}
-        </Typography>
-        <Button
-          fullWidth
-          label="Logout"
-          style="danger-text"
-          onClick={handleLogout}
-        />
-      </Popover>
+      <div>
+        <div ref={avatarRef}>
+          <Avatar size="large" user={{ name: userName }} />
+        </div>
+        <Popover reference={avatarRef}>
+          <Typography className="">{userName}</Typography>
+          <Typography className="border-b" style="body3">
+            {userEmail}
+          </Typography>
+          <Button
+            fullWidth
+            label="Logout"
+            style="danger-text"
+            onClick={handleLogout}
+          />
+        </Popover>
+      </div>
     </div>
   );
 };

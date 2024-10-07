@@ -8,27 +8,19 @@ class Post < ApplicationRecord
   validates :title,
     presence: true,
     length: { maximum: MAX_TITLE_LENGTH }
-  validate :non_negative_net_votes
   validates_inclusion_of :is_blog_worthy, in: [true, false]
   validates :slug, uniqueness: true
   validate :slug_not_changed
 
   before_create :set_slug
 
-  def is_blog_worthy?
-    net_votes = self.upvotes - self.downvotes
-    net_votes > Constants::BLOG_WORTHY_THRESHOLD
+  def update_blog_worthy_status
+    net_votes = upvotes - downvotes
+    self.is_blog_worthy = net_votes >= Constants::BLOG_WORTHY_THRESHOLD
+    save!
   end
 
   private
-
-    def non_negative_net_votes
-      net_votes = upvotes - downvotes
-
-      if net_votes.negative?
-        errors.add(:base, "Net votes (upvotes - downvotes) cannot be negative")
-      end
-    end
 
     def set_slug
       title_slug = title.parameterize

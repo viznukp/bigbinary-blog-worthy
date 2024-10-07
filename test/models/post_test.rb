@@ -19,12 +19,6 @@ class PostTest < ActiveSupport::TestCase
     assert @post.invalid?
   end
 
-  def test_net_votes_should_not_be_negative
-    @post.upvotes = 5
-    @post.downvotes = 6
-    assert @post.invalid?
-  end
-
   def test_post_should_be_invalid_without_user
     @post.user = nil
     assert @post.invalid?

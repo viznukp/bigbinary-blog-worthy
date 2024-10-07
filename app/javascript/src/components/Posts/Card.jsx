@@ -2,75 +2,82 @@ import React, { useState } from "react";
 
 import { Typography } from "@bigbinary/neetoui";
 
-import postsApi from "apis/posts";
+import votesApi from "apis/votes";
 
+import BlogWorthyIndicator from "./BlogWorthyIndicator";
 import Show from "./Show";
 
 const Card = ({ data, reloadPosts }) => {
   const [isPostClicked, setIsPostClicked] = useState(false);
-  const { upvotes, downvotes } = data;
-  const netVoteCount = upvotes - downvotes;
+  const { upvotes: upVotes, downvotes: downVotes } = data;
 
   const updateVote = async voteType => {
-    const payload =
-      voteType === "upvote"
-        ? { upvotes: upvotes + 1 }
-        : { downvotes: downvotes + 1 };
+    const payload = { vote_type: voteType, slug: data.slug };
 
     try {
-      await postsApi.update({
-        slug: data.slug,
-        payload,
-      });
+      await votesApi.create(payload);
       reloadPosts();
     } catch (error) {
       logger.error(error);
     }
   };
 
+  const abbreviatedVoteRepresentation = votes => {
+    if (votes >= 1_000_000) {
+      return `${(votes / 1_000_000).toFixed(1)}M`;
+    }
+
+    if (votes >= 1_000) {
+      return `${(votes / 1_000).toFixed(1)}k`;
+    }
+
+    return votes.toString();
+  };
+
   return (
     <>
-      <div className="flex justify-between gap-4 rounded-md border bg-blue-50 p-2">
-        <div className="min-w-0 flex-1">
-          <div className="flex gap-3">
+      <div className="rounded-md border bg-blue-50 p-4 shadow-md">
+        <div className="flex justify-between border-b">
+          <div className="min-w-0">
+            <div className="flex items-center gap-3">
+              <Typography
+                className="cursor-pointer text-lg font-medium text-blue-600 hover:text-blue-500"
+                onClick={() => setIsPostClicked(true)}
+              >
+                {data.title}
+              </Typography>
+              <BlogWorthyIndicator show={data.is_blog_worthy} />
+            </div>
             <Typography
-              className="cursor-pointer text-blue-600 hover:text-blue-500"
-              style="h3"
+              className="border-b pb-2 text-xs text-gray-700"
               weight="medium"
-              onClick={() => {
-                setIsPostClicked(true);
-              }}
             >
-              {data.title}
+              {data.author.name}
             </Typography>
-            {data.is_blog_worthy && (
-              <p className="m-0 h-5 rounded-full border border-green-500 bg-green-200 px-2 text-xs font-semibold leading-5 text-green-700">
-                blog-worthy
-              </p>
-            )}
           </div>
-          <Typography className="mt-2 border-b" style="h5" weight="medium">
-            {data.author.name}
-          </Typography>
-          <Typography className="mt-4 truncate" style="body2" weight="normal">
-            {data.description}
-          </Typography>
+          <div className="flex items-center space-x-1">
+            <button
+              className=" flex items-center justify-center rounded-md bg-green-400 p-1 font-semibold text-white shadow-md transition-all duration-300 hover:bg-green-500"
+              onClick={() => updateVote("upvote")}
+            >
+              <i className="ri-arrow-up-s-fill" />
+            </button>
+            <span> {abbreviatedVoteRepresentation(upVotes)}</span>
+            <button
+              className=" flex items-center justify-center rounded-md bg-red-400 p-1 font-semibold text-white shadow-md transition-all duration-300 hover:bg-red-500"
+              onClick={() => updateVote("downvote")}
+            >
+              <i className="ri-arrow-down-s-fill" />
+            </button>
+            <span>{abbreviatedVoteRepresentation(downVotes)}</span>
+          </div>
         </div>
-        <div className="flex flex-col items-center justify-between gap-2 px-4">
-          <button
-            className="rounded bg-gray-200 p-1 hover:bg-gray-300"
-            onClick={() => updateVote("upvote")}
-          >
-            <i className="ri-arrow-up-s-line" />
-          </button>
-          <Typography className="text-center font-semibold">{netVoteCount}</Typography>
-          <button
-            className="rounded bg-gray-200 p-1 hover:bg-gray-300"
-            onClick={() => updateVote("downvote")}
-          >
-            <i className="ri-arrow-down-s-line" />
-          </button>
-        </div>
+        <Typography
+          className="mt-3 truncate text-sm text-gray-600"
+          weight="normal"
+        >
+          {data.description}
+        </Typography>
       </div>
       {isPostClicked && (
         <Show

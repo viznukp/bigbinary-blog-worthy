@@ -9,6 +9,8 @@ json.posts @posts do |post|
     :downvotes,
     :is_blog_worthy
 
+  json.vote_type @user_votes[post.id] || nil
+
   json.author do
     json.extract! post.author,
       :name

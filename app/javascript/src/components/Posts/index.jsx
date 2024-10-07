@@ -52,7 +52,7 @@ const Posts = () => {
       ) : (
         <div className="mt-4 flex flex-col gap-2">
           {posts.map(post => (
-            <Card data={post} key={post.id} reloadPosts={reloadPosts} />
+            <Card data={post} key={post.slug} reloadPosts={reloadPosts} />
           ))}
         </div>
       )}
