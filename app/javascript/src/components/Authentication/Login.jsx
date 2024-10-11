@@ -11,12 +11,12 @@ const Login = () => {
   const handleSubmit = async payload => {
     setLoading(true);
     try {
-      const response = await authApi.login(payload);
+      const data = await authApi.login(payload);
       setToLocalStorage({
-        authToken: response.data.authentication_token,
+        authToken: data.authenticationToken,
         email: payload.email.toLowerCase(),
-        userId: response.data.id,
-        userName: response.data.name,
+        userId: data.id,
+        userName: data.name,
       });
       setAuthHeaders();
       window.location.href = "/";

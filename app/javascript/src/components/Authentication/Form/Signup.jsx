@@ -1,10 +1,10 @@
 import React from "react";
 
 import { Button } from "@bigbinary/neetoui";
-import { Input, Select, Form as NeetoUIForm } from "@bigbinary/neetoui/formik";
+import { Input, Form as NeetoUIForm } from "@bigbinary/neetoui/formik";
 import { Link } from "react-router-dom";
 
-const Signup = ({ organizations, handleSubmit, loading }) => (
+const Signup = ({ handleSubmit, loading }) => (
   <div
     className="flex min-h-screen items-center justify-center bg-gray-50
     px-4 py-12 sm:px-6 lg:px-8 "
@@ -34,7 +34,7 @@ const Signup = ({ organizations, handleSubmit, loading }) => (
             email: "",
             password: "",
             passwordConfirmation: "",
-            organization: "",
+            organizationName: "",
           },
           onSubmit: handleSubmit,
         }}
@@ -46,10 +46,10 @@ const Signup = ({ organizations, handleSubmit, loading }) => (
           placeholder="oliver@example.com"
           type="email"
         />
-        <Select
-          name="organization"
-          optionRemapping={{ label: "name", value: "id" }}
-          options={organizations}
+        <Input
+          label="Organization"
+          name="organizationName"
+          placeholder="Name of your organization"
         />
         <Input
           label="Password"

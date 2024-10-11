@@ -17,9 +17,7 @@ const Posts = () => {
 
   const fetchPosts = async () => {
     try {
-      const {
-        data: { posts },
-      } = await postsApi.fetch();
+      const { posts } = await postsApi.fetch();
       setPosts(posts);
     } catch (error) {
       logger.error(error);

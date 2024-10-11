@@ -5,6 +5,7 @@ class Post < ApplicationRecord
   VALID_TITLE_REGEX = /\A.*[a-zA-Z0-9].*\z/i
 
   belongs_to :author, foreign_key: "author_id", class_name: "User"
+  has_many :votes, dependent: :destroy
 
   validates :title,
     presence: true,

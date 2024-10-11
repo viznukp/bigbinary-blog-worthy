@@ -52,8 +52,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_03_221449) do
     t.index ["user_id"], name: "index_votes_on_user_id"
   end
 
-  add_foreign_key "posts", "users", column: "author_id"
-  add_foreign_key "users", "organizations"
+  add_foreign_key "posts", "users", column: "author_id", on_delete: :cascade
+  add_foreign_key "users", "organizations", on_delete: :cascade
   add_foreign_key "votes", "posts"
   add_foreign_key "votes", "users"
 end

@@ -1,11 +1,20 @@
+import {
+  keysToCamelCase,
+  serializeKeysToSnakeCase,
+} from "@bigbinary/neeto-cist";
 import { Toastr } from "@bigbinary/neetoui";
 import axios from "axios";
+import { evolve } from "ramda";
 
 import { setToLocalStorage, getFromLocalStorage } from "utils/storage";
 
 const DEFAULT_ERROR_NOTIFICATION = "Something went wrong!";
 
 axios.defaults.baseURL = "/";
+
+const transformResponseKeysToCamelCase = response => {
+  if (response.data) response.data = keysToCamelCase(response.data);
+};
 
 const setAuthHeaders = () => {
   axios.defaults.headers = {
@@ -23,6 +32,11 @@ const setAuthHeaders = () => {
     axios.defaults.headers["X-Auth-Email"] = email;
     axios.defaults.headers["X-Auth-Token"] = token;
   }
+};
+
+const resetAuthTokens = () => {
+  delete axios.defaults.headers["X-Auth-Email"];
+  delete axios.defaults.headers["X-Auth-Token"];
 };
 
 const handleSuccessResponse = response => {
@@ -52,15 +66,29 @@ const handleErrorResponse = axiosErrorObject => {
   return Promise.reject(axiosErrorObject);
 };
 
-const registerIntercepts = () => {
-  axios.interceptors.response.use(handleSuccessResponse, error =>
-    handleErrorResponse(error)
+const responseInterceptors = () => {
+  axios.interceptors.response.use(
+    response => {
+      handleSuccessResponse(response);
+      transformResponseKeysToCamelCase(response);
+
+      return response.data;
+    },
+    error => {
+      handleErrorResponse(error);
+    }
   );
 };
 
-const resetAuthTokens = () => {
-  delete axios.defaults.headers["X-Auth-Email"];
-  delete axios.defaults.headers["X-Auth-Token"];
+const requestInterceptors = () => {
+  axios.interceptors.request.use(
+    evolve({ data: serializeKeysToSnakeCase, params: serializeKeysToSnakeCase })
+  );
 };
 
-export { setAuthHeaders, registerIntercepts, resetAuthTokens };
+const initializeAxios = () => {
+  responseInterceptors();
+  requestInterceptors();
+};
+
+export { initializeAxios, setAuthHeaders, resetAuthTokens };

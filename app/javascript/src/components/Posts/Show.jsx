@@ -12,9 +12,7 @@ const Show = ({ slug, isModalOpen, setIsModalOpen }) => {
 
   const fetchPostDetails = async () => {
     try {
-      const {
-        data: { post: postDetails },
-      } = await postsApi.show(slug);
+      const { post: postDetails } = await postsApi.show(slug);
       setPost(postDetails);
       setLoading(false);
     } catch (error) {
