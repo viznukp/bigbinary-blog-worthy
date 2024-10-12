@@ -1,29 +1,79 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
-import { Button, Typography } from "@bigbinary/neetoui";
-import { Input, Textarea } from "@bigbinary/neetoui/formik";
+import { Button } from "@bigbinary/neetoui";
+import {
+  Form as NeetoUIForm,
+  Input,
+  Textarea,
+} from "@bigbinary/neetoui/formik";
+import { useHistory } from "react-router-dom/cjs/react-router-dom";
 
-const Form = ({ handleCancel }) => (
-  <div className="mt-6 flex flex-col gap-4">
-    <Typography weight="bold">Add new post</Typography>
-    <Input
-      required
-      label="Title"
-      name="title"
-      placeholder="Title of the post"
-      size="medium"
-    />
-    <Textarea
-      required
-      label="Description"
-      name="description"
-      placeholder="Add detailed description of the post"
-    />
-    <div className="flex gap-2">
-      <Button label="Create" type="submit" />
-      <Button label="Cancel" style="danger" onClick={handleCancel} />
-    </div>
-  </div>
-);
+import postsApi from "apis/posts";
+import { PageLoader } from "components/commons";
 
-export default Form;
+const Edit = ({ handleSubmit, fetchFirst, slug }) => {
+  const [post, setPost] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const history = useHistory();
+
+  const fetchPost = async () => {
+    setIsLoading(true);
+    try {
+      const { post: postDetails } = await postsApi.show(slug);
+      setPost(postDetails);
+      setIsLoading(false);
+    } catch (error) {
+      logger.error(error);
+    }
+  };
+
+  useEffect(() => {
+    if (fetchFirst) fetchPost();
+  }, []);
+
+  if (isLoading) {
+    return <PageLoader />;
+  }
+
+  return (
+    <NeetoUIForm
+      className="flex flex-col gap-4"
+      formikProps={{
+        initialValues: {
+          title: post.title || "",
+          description: post.description || "",
+        },
+        onSubmit: handleSubmit,
+      }}
+    >
+      <Input
+        required
+        label="Title"
+        name="title"
+        placeholder="Title of the post"
+        size="medium"
+      />
+      <Textarea
+        required
+        label="Description"
+        name="description"
+        placeholder="Description of the post"
+        size="large"
+      />
+      <div className="flex justify-end gap-2">
+        <Button
+          label="Cancel"
+          style="secondary"
+          onClick={() => history.push("/")}
+        />
+        <Button
+          className="bg-black text-white transition-all duration-300 ease-in-out hover:bg-gray-800 hover:text-green-400"
+          label="Submit"
+          type="submit"
+        />
+      </div>
+    </NeetoUIForm>
+  );
+};
+
+export default Edit;

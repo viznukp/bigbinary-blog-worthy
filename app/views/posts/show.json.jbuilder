@@ -3,7 +3,8 @@ json.post do
     :id,
     :title,
     :description,
-    :is_blog_worthy
+    :is_blog_worthy,
+    :updated_at
 
   json.author do
     json.extract! @post.author,

@@ -1,53 +1,56 @@
 import React, { useEffect, useState } from "react";
 
-import { Modal, Typography } from "@bigbinary/neetoui";
+import { Typography, Button } from "@bigbinary/neetoui";
+import { useParams, useHistory } from "react-router-dom/cjs/react-router-dom";
 
 import postsApi from "apis/posts";
+import { Container, PageTitle, PageLoader } from "components/commons";
+import { dateFromTimeStamp } from "utils/dateTime";
 
-import BlogWorthyIndicator from "./BlogWorthyIndicator";
-
-const Show = ({ slug, isModalOpen, setIsModalOpen }) => {
+const Show = () => {
   const [post, setPost] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const history = useHistory();
+  const { slug } = useParams();
 
-  const fetchPostDetails = async () => {
+  const fetchPost = async () => {
     try {
       const { post: postDetails } = await postsApi.show(slug);
       setPost(postDetails);
-      setLoading(false);
+      setIsLoading(false);
     } catch (error) {
       logger.error = error;
     }
   };
 
   useEffect(() => {
-    fetchPostDetails();
+    fetchPost();
   }, []);
 
+  if (isLoading) {
+    return <PageLoader />;
+  }
+
   return (
-    <>
-      {!loading && (
-        <Modal
-          className="px-6 py-6"
-          isOpen={isModalOpen}
-          size="large"
-          onClose={() => setIsModalOpen(false)}
-        >
-          <div className="flex gap-3">
-            <Typography className="text-blue-600" style="h3" weight="semibold">
-              {post.title}
-            </Typography>
-            <BlogWorthyIndicator show={post.is_blog_worthy} />
-          </div>
-          <Typography className="mt-2" style="h5" weight="normal">
-            {post.author.name}
-          </Typography>
-          <Typography className="mt-4 max-h-64 overflow-auto rounded-md border bg-blue-50 p-2">
-            {post.description}
-          </Typography>
-        </Modal>
-      )}
-    </>
+    <Container>
+      <PageTitle>
+        <Button
+          className="bg-black"
+          label="Edit Post"
+          onClick={() => history.push(`/posts/${slug}/edit`)}
+        />
+      </PageTitle>
+      <Typography style="h1" weight="extrabold">
+        {post.title}
+      </Typography>
+      <Typography className="mr-2 inline-block border-r-2 pr-2 text-xs text-gray-500">
+        {post.author.name}
+      </Typography>
+      <Typography className="inline-block pr-2 text-xs  text-gray-400">
+        {dateFromTimeStamp(post.updatedAt)}
+      </Typography>
+      <Typography className="mt-3">{post.description}</Typography>
+    </Container>
   );
 };
 

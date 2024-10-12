@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 
 import { Button, Typography, Avatar, Popover } from "@bigbinary/neetoui";
+import { Link } from "react-router-dom/cjs/react-router-dom";
 import { resetAuthTokens } from "src/apis/axios";
 
 import authApi from "apis/auth";
@@ -32,14 +33,17 @@ const SideBar = () => {
 
   return (
     <div className="flex w-16 flex-col items-center space-y-4 border-r border-gray-300 px-10 pb-4">
-      <div className="flex flex-1 flex-col items-center">
-        <BlogWorthyLogo className="mt-4" height={64} width={64} />
+      <div className="flex flex-1 flex-col items-center gap-2">
+        <Link to="/">
+          <BlogWorthyLogo className="mt-4" height={64} width={64} />
+        </Link>
         <SideBarNavItem
           className="mt-6"
           icon="dashboard-line"
           label="Posts"
-          url="/"
+          path="/"
         />
+        <SideBarNavItem icon="add-line" label="New" path="/posts/new" />
       </div>
       <div>
         <div ref={avatarRef}>

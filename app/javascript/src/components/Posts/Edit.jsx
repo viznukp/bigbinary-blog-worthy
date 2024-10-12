@@ -1,18 +1,19 @@
 import React from "react";
 
-import { useHistory } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom/cjs/react-router-dom";
 
 import postsApi from "apis/posts";
 import { Container, PageTitle } from "components/commons";
 
 import Form from "./Form";
 
-const Create = () => {
+const Edit = () => {
+  const { slug } = useParams();
   const history = useHistory();
 
   const handleSubmit = async payload => {
     try {
-      await postsApi.create(payload);
+      await postsApi.update({ slug, payload });
       history.push("/");
     } catch (error) {
       logger.error(error);
@@ -21,10 +22,10 @@ const Create = () => {
 
   return (
     <Container>
-      <PageTitle title="Create new post" />
-      <Form handleSubmit={handleSubmit} />
+      <PageTitle title="Edit post" />
+      <Form fetchFirst handleSubmit={handleSubmit} slug={slug} />
     </Container>
   );
 };
 
-export default Create;
+export default Edit;

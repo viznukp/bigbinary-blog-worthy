@@ -7,7 +7,8 @@ json.posts @posts do |post|
     :description,
     :upvotes,
     :downvotes,
-    :is_blog_worthy
+    :is_blog_worthy,
+    :updated_at
 
   json.vote_type @user_votes[post.id] || nil
 

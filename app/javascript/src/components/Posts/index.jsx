@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from "react";
 
+import { Button } from "@bigbinary/neetoui";
 import { isNil, isEmpty, either } from "ramda";
+import { useHistory } from "react-router-dom/cjs/react-router-dom";
 
 import postsApi from "apis/posts";
 import { PageLoader, PageTitle } from "components/commons";
 
 import Card from "./Card";
-import Create from "./Create";
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [needPostReload, setNeedPostReload] = useState(true);
-
-  const reloadPosts = () => setNeedPostReload(prevValue => !prevValue);
+  const history = useHistory();
 
   const fetchPosts = async () => {
     try {
@@ -28,7 +27,7 @@ const Posts = () => {
 
   useEffect(() => {
     fetchPosts();
-  }, [needPostReload]);
+  }, []);
 
   if (loading) {
     return (
@@ -41,7 +40,11 @@ const Posts = () => {
   return (
     <>
       <PageTitle title="Posts">
-        <Create reloadPosts={reloadPosts} />
+        <Button
+          className="bg-black"
+          label="Create new post"
+          onClick={() => history.push("/posts/new")}
+        />
       </PageTitle>
       {either(isNil, isEmpty)(posts) ? (
         <h1 className="my-12 text-center text-xl leading-5">
@@ -50,7 +53,7 @@ const Posts = () => {
       ) : (
         <div className="mt-4 flex flex-col gap-2">
           {posts.map(post => (
-            <Card data={post} key={post.slug} reloadPosts={reloadPosts} />
+            <Card data={post} key={post.slug} />
           ))}
         </div>
       )}
