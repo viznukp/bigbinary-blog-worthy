@@ -5,13 +5,16 @@ import { isNil, isEmpty, either } from "ramda";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 
 import postsApi from "apis/posts";
-import { PageLoader, PageTitle } from "components/commons";
+import CategoryList from "components/CategoryList";
+import { PageLoader, PageTitle, Container } from "components/commons";
 
 import Card from "./Card";
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isCategoryListVisible, setIsCategoryListVisible] = useState(true);
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const history = useHistory();
 
   const fetchPosts = async () => {
@@ -27,7 +30,7 @@ const Posts = () => {
 
   useEffect(() => {
     fetchPosts();
-  }, []);
+  }, [selectedCategories]);
 
   if (loading) {
     return (
@@ -38,8 +41,20 @@ const Posts = () => {
   }
 
   return (
-    <>
+    <Container
+      additionalSidebar={
+        <CategoryList
+          setSelectedCategories={setSelectedCategories}
+          show={isCategoryListVisible}
+        />
+      }
+    >
       <PageTitle title="Posts">
+        <Button
+          className="bg-black"
+          label="Filter by category"
+          onClick={() => setIsCategoryListVisible(!isCategoryListVisible)}
+        />
         <Button
           className="bg-black"
           label="Create new post"
@@ -57,7 +72,7 @@ const Posts = () => {
           ))}
         </div>
       )}
-    </>
+    </Container>
   );
 };
 

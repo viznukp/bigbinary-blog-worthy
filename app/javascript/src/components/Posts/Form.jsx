@@ -67,7 +67,7 @@ const Edit = ({ handleSubmit, fetchFirst, slug }) => {
           onClick={() => history.push("/")}
         />
         <Button
-          className="bg-black text-white transition-all duration-300 ease-in-out hover:bg-gray-800 hover:text-green-400"
+          className="bg-black text-white transition-all duration-300 ease-in-out hover:bg-gray-600"
           label="Submit"
           type="submit"
         />

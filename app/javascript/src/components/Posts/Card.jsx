@@ -42,6 +42,7 @@ const Card = ({ data }) => {
           <div className="flex items-center gap-3">
             <Typography
               className="cursor-pointer text-lg font-bold hover:text-blue-500"
+              textTransform="capitalize"
               onClick={() => history.push(`/posts/${data.slug}/show`)}
             >
               {data.title}
