@@ -8,12 +8,12 @@ import { dateFromTimeStamp } from "utils/dateTime";
 
 import BlogWorthyIndicator from "./BlogWorthyIndicator";
 
-const Card = ({ data }) => {
-  const { upvotes: upVotes, downvotes: downVotes } = data;
+const Card = ({ post }) => {
+  const { upvotes: upVotes, downvotes: downVotes } = post;
   const history = useHistory();
 
   const updateVote = async voteType => {
-    const payload = { vote_type: voteType, slug: data.slug };
+    const payload = { vote_type: voteType, slug: post.slug };
 
     try {
       await votesApi.create(payload);
@@ -43,22 +43,25 @@ const Card = ({ data }) => {
             <Typography
               className="cursor-pointer text-lg font-bold hover:text-blue-500"
               textTransform="capitalize"
-              onClick={() => history.push(`/posts/${data.slug}/show`)}
+              onClick={() => history.push(`/posts/${post.slug}/show`)}
             >
-              {data.title}
+              {post.title}
             </Typography>
-            <BlogWorthyIndicator show={data.is_blog_worthy} />
+            <BlogWorthyIndicator show={post.is_blog_worthy} />
           </div>
           <div className="flex gap-2 py-2">
-            {data.categories?.map(({ id, name }) => (
+            {post.categories?.map(({ id, name }) => (
               <Tag key={id} label={name} />
             ))}
           </div>
-          <Typography className="mr-2 inline-block border-r-2 pr-2 text-xs text-gray-500">
-            {data.author.name}
+          <Typography
+            className="mr-2 inline-block border-r-2 pr-2 text-xs text-gray-500"
+            textTransform="capitalize"
+          >
+            {post.author.name}
           </Typography>
           <Typography className="inline-block pr-2 text-xs  text-gray-400">
-            {dateFromTimeStamp(data.updatedAt)}
+            {dateFromTimeStamp(post.updatedAt)}
           </Typography>
         </div>
         <div className="flex items-center space-x-1">
@@ -86,7 +89,7 @@ const Card = ({ data }) => {
           WebkitBoxOrient: "vertical",
         }}
       >
-        {data.description}
+        {post.description}
       </p>
     </div>
   );
