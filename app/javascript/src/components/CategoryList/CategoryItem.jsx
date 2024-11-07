@@ -1,14 +1,17 @@
 import React from "react";
 
-const CategoryItem = ({ name, value, handleClick }) => (
-  <li className="mt-2 border bg-gray-300 px-2 py-2">
-    <input
+import { Checkbox } from "@bigbinary/neetoui";
+
+const CategoryItem = ({ id, name, isChecked, handleClick }) => (
+  <li className="flex border bg-gray-300 p-2">
+    <Checkbox
+      checked={isChecked}
       className="mr-2 rounded"
-      type="checkbox"
-      value={value}
-      onChange={e => handleClick(e.target.value)}
+      id={id}
+      label={name}
+      value={name}
+      onChange={handleClick}
     />
-    {name}
   </li>
 );
 

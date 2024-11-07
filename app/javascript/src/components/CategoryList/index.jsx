@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from "react";
 
-import { Typography, Input } from "@bigbinary/neetoui";
+import { Typography } from "@bigbinary/neetoui";
 import classnames from "classnames";
+import { without } from "ramda";
 
 import categoriesApi from "apis/categories";
 
 import CategoryItem from "./CategoryItem";
+import Create from "./Create";
+import Search from "./Search";
 
-const CategoryList = ({ show = false, setSelectedCategories }) => {
+const CategoryList = ({ show = false, setFilterCategories }) => {
   const [categories, setCategories] = useState([]);
+  const [activeCategories, setActiveCategories] = useState([]);
   const [isCreateEnabled, setIsCreateEnabled] = useState(false);
-
-  const handleSelection = value => {
-    setSelectedCategories(value);
-  };
+  const [isSearchEnabled, setIsSearchEnabled] = useState(false);
+  const [reloadRequired, setReloadRequired] = useState(false);
 
   const fetchCategories = async () => {
     try {
@@ -24,53 +26,81 @@ const CategoryList = ({ show = false, setSelectedCategories }) => {
     }
   };
 
+  const handleActiveCategories = value => {
+    setActiveCategories(prevCategories => {
+      if (prevCategories.includes(value)) {
+        return without([value], prevCategories);
+      }
+
+      return [...prevCategories, value];
+    });
+  };
+
   useEffect(() => {
     fetchCategories();
-  }, []);
+  }, [reloadRequired]);
+
+  useEffect(() => {
+    setFilterCategories(activeCategories);
+  }, [activeCategories]);
 
   return (
-    <div
-      className={classnames(
-        "overflow-hidden bg-blue-50 transition-all duration-500 ease-in-out",
-        {
-          "w-0 px-0 opacity-0": !show,
-          "w-72 px-3 opacity-100": show,
-        }
-      )}
-    >
-      <div className="flex items-center justify-between pt-8 pb-4">
-        <Typography
-          className="font-semibold"
-          style="h3"
-          textTransform="capitalize"
-        >
-          Categories
-        </Typography>
-        <button className="h-4 w-4 rounded-full hover:bg-gray-300">
-          <i className="ri-search-line" />
-        </button>
-        <button
-          className="h-4 w-4 rounded-full hover:bg-gray-300"
-          onClick={() => setIsCreateEnabled(!isCreateEnabled)}
-        >
-          {!isCreateEnabled && <i className="ri-add-line" />}
-          {isCreateEnabled && <i className="ri-close-line" />}
-        </button>
-      </div>
-      {isCreateEnabled && <Input placeholder="Category Name" type="text" />}
-      <form>
-        <ul>
+    <>
+      <div
+        className={classnames(
+          "overflow-hidden bg-blue-50 transition-all duration-500 ease-in-out",
+          {
+            "w-0 px-0 opacity-0": !show,
+            "w-72 px-3 opacity-100": show,
+          }
+        )}
+      >
+        <div className="flex items-center justify-between pt-8 pb-4">
+          <Typography
+            className="font-semibold"
+            style="h3"
+            textTransform="capitalize"
+          >
+            Categories
+          </Typography>
+          <div className="flex gap-2">
+            <button
+              className="flex  items-center rounded-full p-1 hover:bg-gray-300"
+              onClick={() => setIsSearchEnabled(!isSearchEnabled)}
+            >
+              <i className="ri-search-line" />
+            </button>
+            <button
+              className="flex  items-center rounded-full p-1 hover:bg-gray-300"
+              onClick={() => setIsCreateEnabled(!isCreateEnabled)}
+            >
+              <i className="ri-add-line" />
+            </button>
+          </div>
+        </div>
+        {isSearchEnabled && (
+          <Search
+            categories={categories}
+            setSelectedCategories={handleActiveCategories}
+          />
+        )}
+        <ul className="mt-2 flex flex-col gap-2 overflow-y-auto">
           {categories.map(category => (
             <CategoryItem
-              handleClick={handleSelection}
+              handleClick={() => handleActiveCategories(category.name)}
               key={category.id}
-              name={category.name}
-              value={category.name}
+              {...category}
+              isChecked={activeCategories.includes(category.name)}
             />
           ))}
         </ul>
-      </form>
-    </div>
+      </div>
+      <Create
+        disableCreate={() => setIsCreateEnabled(!isCreateEnabled)}
+        isCreateEnabled={isCreateEnabled}
+        reloadCategories={() => setReloadRequired(true)}
+      />
+    </>
   );
 };
 

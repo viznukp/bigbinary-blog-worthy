@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Typography } from "@bigbinary/neetoui";
+import { Typography, Tag } from "@bigbinary/neetoui";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 
 import votesApi from "apis/votes";
@@ -48,6 +48,11 @@ const Card = ({ data }) => {
               {data.title}
             </Typography>
             <BlogWorthyIndicator show={data.is_blog_worthy} />
+          </div>
+          <div className="flex gap-2 py-2">
+            {data.categories?.map(({ id, name }) => (
+              <Tag key={id} label={name} />
+            ))}
           </div>
           <Typography className="mr-2 inline-block border-r-2 pr-2 text-xs text-gray-500">
             {data.author.name}

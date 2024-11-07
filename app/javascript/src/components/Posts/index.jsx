@@ -13,13 +13,15 @@ import Card from "./Card";
 const Posts = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isCategoryListVisible, setIsCategoryListVisible] = useState(true);
-  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [isCategoryListVisible, setIsCategoryListVisible] = useState(false);
+  const [filterCategories, setFilterCategories] = useState([]);
   const history = useHistory();
 
   const fetchPosts = async () => {
     try {
-      const { posts } = await postsApi.fetch();
+      const { posts } = await postsApi.fetch({
+        filters: { categories: filterCategories },
+      });
       setPosts(posts);
     } catch (error) {
       logger.error(error);
@@ -30,7 +32,7 @@ const Posts = () => {
 
   useEffect(() => {
     fetchPosts();
-  }, [selectedCategories]);
+  }, [filterCategories]);
 
   if (loading) {
     return (
@@ -44,7 +46,7 @@ const Posts = () => {
     <Container
       additionalSidebar={
         <CategoryList
-          setSelectedCategories={setSelectedCategories}
+          setFilterCategories={setFilterCategories}
           show={isCategoryListVisible}
         />
       }
@@ -62,9 +64,7 @@ const Posts = () => {
         />
       </PageTitle>
       {either(isNil, isEmpty)(posts) ? (
-        <h1 className="my-12 text-center text-xl leading-5">
-          No posts yet. Share something exciting!
-        </h1>
+        <h1 className="my-12 text-center text-xl leading-5">No posts yet</h1>
       ) : (
         <div className="mt-4 flex flex-col gap-2">
           {posts.map(post => (

@@ -6,7 +6,10 @@ class PostsController < ApplicationController
   after_action :verify_policy_scoped, only: :index
 
   def index
-    @posts = policy_scope(Post)
+    @posts = policy_scope(
+      filter_by_categories_if_categories_is_present()
+    )
+
     @user_votes = current_user
       .votes.where(post: @posts)
       .index_by(&:post_id)
@@ -32,10 +35,21 @@ class PostsController < ApplicationController
 
   private
 
+    def filter_by_categories_if_categories_is_present()
+      categories = filter_params[:categories]
+      categories.present? ?
+        Post.includes(:categories).where(categories: { name: categories }) :
+        Post.includes(:categories)
+    end
+
     def post_params
       params.require(:post)
         .permit(:title, :description)
         .merge(author: current_user)
+    end
+
+    def filter_params
+      params.fetch(:filters, {}).permit(categories: [])
     end
 
     def load_post
