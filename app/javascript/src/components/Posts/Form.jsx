@@ -35,6 +35,7 @@ const Edit = ({ handleSubmit, post = {} }) => {
         initialValues: {
           title: post?.title || "",
           description: post?.description || "",
+          categories: post?.categories,
         },
         onSubmit: handleSubmit,
       }}
@@ -49,7 +50,6 @@ const Edit = ({ handleSubmit, post = {} }) => {
       <Select
         isMulti
         isSearchable
-        defaultValue={post?.categories}
         label="Category"
         name="categories"
         optionRemapping={{ label: "name", value: "id" }}
