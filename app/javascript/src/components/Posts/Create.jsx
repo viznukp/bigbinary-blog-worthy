@@ -1,5 +1,6 @@
 import React from "react";
 
+import { pluck } from "ramda";
 import { useHistory } from "react-router-dom";
 
 import postsApi from "apis/posts";
@@ -10,9 +11,12 @@ import Form from "./Form";
 const Create = () => {
   const history = useHistory();
 
-  const handleSubmit = async payload => {
+  const handleSubmit = async values => {
     try {
-      await postsApi.create(payload);
+      await postsApi.create({
+        ...values,
+        categoryIds: pluck("id", values.categories),
+      });
       history.push("/");
     } catch (error) {
       logger.error(error);
@@ -21,7 +25,7 @@ const Create = () => {
 
   return (
     <Container>
-      <PageTitle title="Create new post" />
+      <PageTitle title="New blog post" />
       <Form handleSubmit={handleSubmit} />
     </Container>
   );

@@ -44,7 +44,7 @@ class PostsController < ApplicationController
 
     def post_params
       params.require(:post)
-        .permit(:title, :description)
+        .permit(:title, :description, category_ids: [])
         .merge(author: current_user)
     end
 
@@ -53,6 +53,6 @@ class PostsController < ApplicationController
     end
 
     def load_post
-      @post = Post.includes(:author).find_by!(slug: params[:slug])
+      @post = Post.includes(:author, :categories).find_by!(slug: params[:slug])
     end
 end

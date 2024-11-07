@@ -5,43 +5,36 @@ import {
   Form as NeetoUIForm,
   Input,
   Textarea,
+  Select,
 } from "@bigbinary/neetoui/formik";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 
-import postsApi from "apis/posts";
-import { PageLoader } from "components/commons";
+import categoriesApi from "apis/categories";
 
-const Edit = ({ handleSubmit, fetchFirst, slug }) => {
-  const [post, setPost] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
+const Edit = ({ handleSubmit, post = {} }) => {
   const history = useHistory();
+  const [categories, setCategories] = useState([]);
 
-  const fetchPost = async () => {
-    setIsLoading(true);
+  const fetchCategories = async () => {
     try {
-      const { post: postDetails } = await postsApi.show(slug);
-      setPost(postDetails);
-      setIsLoading(false);
+      const { categories } = await categoriesApi.fetch();
+      setCategories(categories);
     } catch (error) {
       logger.error(error);
     }
   };
 
   useEffect(() => {
-    if (fetchFirst) fetchPost();
+    fetchCategories();
   }, []);
-
-  if (isLoading) {
-    return <PageLoader />;
-  }
 
   return (
     <NeetoUIForm
       className="flex flex-col gap-4"
       formikProps={{
         initialValues: {
-          title: post.title || "",
-          description: post.description || "",
+          title: post?.title || "",
+          description: post?.description || "",
         },
         onSubmit: handleSubmit,
       }}
@@ -52,6 +45,16 @@ const Edit = ({ handleSubmit, fetchFirst, slug }) => {
         name="title"
         placeholder="Title of the post"
         size="medium"
+      />
+      <Select
+        isMulti
+        isSearchable
+        defaultValue={post?.categories}
+        label="Category"
+        name="categories"
+        optionRemapping={{ label: "name", value: "id" }}
+        options={categories}
+        placeholder="Select one or more category"
       />
       <Textarea
         required
