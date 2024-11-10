@@ -20,6 +20,10 @@ class PostPolicy
     post.author_id == user.id
   end
 
+  def destroy?
+    post.author_id == user.id
+  end
+
   class Scope
     attr_reader :user, :scope
 

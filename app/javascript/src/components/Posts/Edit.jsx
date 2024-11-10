@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import { Check } from "@bigbinary/neeto-icons";
+import { Check, MenuHorizontal } from "@bigbinary/neeto-icons";
 import { Button, ActionDropdown } from "@bigbinary/neetoui";
 import { pluck } from "ramda";
 import { useParams, useHistory } from "react-router-dom/cjs/react-router-dom";
@@ -22,6 +22,7 @@ const Edit = () => {
   const [post, setPost] = useState({});
   const formRef = useRef();
   const [saveType, setSaveType] = useState(STATUS_DRAFT);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const fetchPost = async () => {
     setIsLoading(true);
@@ -44,6 +45,15 @@ const Edit = () => {
           categoryIds: pluck("id", values.categories),
         },
       });
+      history.push("/");
+    } catch (error) {
+      logger.error(error);
+    }
+  };
+
+  const deletePost = async () => {
+    try {
+      await postsApi.destroy(slug);
       history.push("/");
     } catch (error) {
       logger.error(error);
@@ -103,6 +113,23 @@ const Edit = () => {
             />
           </div>
         </ActionDropdown>
+        <div className="relative">
+          <Button
+            icon={MenuHorizontal}
+            style="text"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          />
+          {isMenuOpen && (
+            <div className="absolute right-0 z-20 mt-2 w-48 rounded-md border border-gray-300 bg-white  shadow-xl">
+              <Button
+                fullWidth
+                label="Delete"
+                style="danger-text"
+                onClick={deletePost}
+              />
+            </div>
+          )}
+        </div>
       </PageTitle>
       <Form
         formRef={formRef}
