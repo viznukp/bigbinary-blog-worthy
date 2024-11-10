@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 
-import { Typography, Button, Tag } from "@bigbinary/neetoui";
+import { Edit } from "@bigbinary/neeto-icons";
+import { Typography, Button, Tag, Tooltip } from "@bigbinary/neetoui";
 import { useParams, useHistory } from "react-router-dom/cjs/react-router-dom";
 
 import postsApi from "apis/posts";
-import { Container, PageTitle, PageLoader } from "components/commons";
+import { Container, PageLoader } from "components/commons";
 import { dateFromTimeStamp } from "utils/dateTime";
 
 const Show = () => {
@@ -33,16 +34,21 @@ const Show = () => {
 
   return (
     <Container>
-      <PageTitle>
-        <Button
-          className="bg-black"
-          label="Edit Post"
-          onClick={() => history.push(`/posts/${slug}/edit`)}
-        />
-      </PageTitle>
-      <Typography style="h1" textTransform="capitalize" weight="extrabold">
-        {post.title}
-      </Typography>
+      <div className="mt-12 flex gap-4">
+        <Typography style="h1" textTransform="capitalize" weight="extrabold">
+          {post.title}
+        </Typography>
+        <div className="h-16 w-16">
+          <Tooltip content="Edit" position="top">
+            <Button
+              icon={Edit}
+              size="large"
+              style="text"
+              onClick={() => history.push(`/posts/${slug}/edit`)}
+            />
+          </Tooltip>
+        </div>
+      </div>
       <div className="flex gap-2 py-2">
         {post.categories?.map(({ id, name }) => (
           <Tag key={id} label={name} />
