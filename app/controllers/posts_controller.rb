@@ -35,7 +35,7 @@ class PostsController < ApplicationController
 
   private
 
-    def filter_by_categories_if_categories_is_present()
+    def filter_by_categories_if_categories_is_present
       categories = filter_params[:categories]
       categories.present? ?
         Post.includes(:categories).where(categories: { name: categories }) :
@@ -44,7 +44,7 @@ class PostsController < ApplicationController
 
     def post_params
       params.require(:post)
-        .permit(:title, :description, category_ids: [])
+        .permit(:title, :description, :status, category_ids: [])
         .merge(author: current_user)
     end
 

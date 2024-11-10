@@ -17,8 +17,6 @@ json.posts @posts do |post|
       :name
   end
 
-  json.categories post.categories.map(&:name)
-
   json.categories post.categories do |category|
     json.extract! category,
       :id,

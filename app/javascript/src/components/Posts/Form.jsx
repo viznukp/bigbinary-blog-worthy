@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from "react";
 
-import { Button } from "@bigbinary/neetoui";
 import {
   Form as NeetoUIForm,
   Input,
   Textarea,
   Select,
 } from "@bigbinary/neetoui/formik";
-import { useHistory } from "react-router-dom/cjs/react-router-dom";
 
 import categoriesApi from "apis/categories";
 
-const Edit = ({ handleSubmit, post = {} }) => {
-  const history = useHistory();
+const Edit = ({ handleSubmit, post = {}, formRef }) => {
   const [categories, setCategories] = useState([]);
 
   const fetchCategories = async () => {
@@ -38,6 +35,7 @@ const Edit = ({ handleSubmit, post = {} }) => {
           categories: post?.categories,
         },
         onSubmit: handleSubmit,
+        innerRef: formRef,
       }}
     >
       <Input
@@ -48,6 +46,7 @@ const Edit = ({ handleSubmit, post = {} }) => {
         size="medium"
       />
       <Select
+        required
         isMulti
         isSearchable
         label="Category"
@@ -63,18 +62,6 @@ const Edit = ({ handleSubmit, post = {} }) => {
         placeholder="Description of the post"
         size="large"
       />
-      <div className="flex justify-end gap-2">
-        <Button
-          label="Cancel"
-          style="secondary"
-          onClick={() => history.push("/")}
-        />
-        <Button
-          className="bg-black text-white transition-all duration-300 ease-in-out hover:bg-gray-600"
-          label="Submit"
-          type="submit"
-        />
-      </div>
     </NeetoUIForm>
   );
 };
