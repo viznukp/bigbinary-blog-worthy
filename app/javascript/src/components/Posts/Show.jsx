@@ -8,6 +8,8 @@ import postsApi from "apis/posts";
 import { Container, PageLoader } from "components/commons";
 import { dateFromTimeStamp } from "utils/dateTime";
 
+import { POST_STATUSES } from "./constants";
+
 const Show = () => {
   const [post, setPost] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -34,10 +36,22 @@ const Show = () => {
 
   return (
     <Container>
-      <div className="mt-12 flex gap-4">
-        <Typography style="h1" textTransform="capitalize" weight="extrabold">
-          {post.title}
-        </Typography>
+      <div className="mt-12 flex justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <Typography style="h1" textTransform="capitalize" weight="extrabold">
+            {post.title}
+          </Typography>
+          <Tag
+            disabled
+            className="h-5"
+            label={post.status}
+            style={
+              post.status === POST_STATUSES.PUBLISHED.STATUS
+                ? "primary"
+                : "danger"
+            }
+          />
+        </div>
         <div className="h-16 w-16">
           <Tooltip content="Edit" position="top">
             <Button
@@ -51,7 +65,7 @@ const Show = () => {
       </div>
       <div className="flex gap-2 py-2">
         {post.categories?.map(({ id, name }) => (
-          <Tag key={id} label={name} />
+          <Tag key={id} label={name} type="solid" />
         ))}
       </div>
       <Typography
