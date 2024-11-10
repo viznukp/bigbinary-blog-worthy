@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import { Check, MenuHorizontal } from "@bigbinary/neeto-icons";
-import { Button, ActionDropdown } from "@bigbinary/neetoui";
+import { MenuHorizontal } from "@bigbinary/neeto-icons";
+import { Button } from "@bigbinary/neetoui";
 import { pluck } from "ramda";
 import { useParams, useHistory } from "react-router-dom/cjs/react-router-dom";
 
@@ -10,18 +10,15 @@ import { Container, PageTitle, PageLoader } from "components/commons";
 
 import { POST_STATUSES } from "./constants";
 import Form from "./Form";
+import SaveActionList from "./SaveActionList";
 
 const Edit = () => {
-  const {
-    DRAFT: { STATUS: STATUS_DRAFT, BUTTON_LABEL: DRAFT_BUTTON_LABEL },
-    PUBLISHED: { STATUS: STATUS_PUBLISHED, BUTTON_LABEL: PUBLISH_BUTTON_LABEL },
-  } = POST_STATUSES;
   const { slug } = useParams();
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);
   const [post, setPost] = useState({});
   const formRef = useRef();
-  const [saveType, setSaveType] = useState(STATUS_DRAFT);
+  const [saveType, setSaveType] = useState(POST_STATUSES.DRAFT.STATUS);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const fetchPost = async () => {
@@ -76,43 +73,11 @@ const Edit = () => {
           style="secondary"
           onClick={() => history.push("/")}
         />
-        <ActionDropdown
-          buttonProps={{
-            className: "neetix-button--primary",
-          }}
-          dropdownProps={{
-            buttonProps: {
-              className: "neetix-button--primary",
-            },
-          }}
-          label={
-            saveType === STATUS_DRAFT
-              ? DRAFT_BUTTON_LABEL
-              : PUBLISH_BUTTON_LABEL
-          }
-          onClick={() => formRef.current.handleSubmit()}
-        >
-          <div className="flex flex-col">
-            <Button
-              fullWidth
-              className="justify-end"
-              icon={saveType === STATUS_PUBLISHED && Check}
-              iconPosition="left"
-              label={PUBLISH_BUTTON_LABEL}
-              style="text"
-              onClick={() => setSaveType(STATUS_PUBLISHED)}
-            />
-            <Button
-              fullWidth
-              className="justify-end"
-              icon={saveType === STATUS_DRAFT && Check}
-              iconPosition="left"
-              label={DRAFT_BUTTON_LABEL}
-              style="text"
-              onClick={() => setSaveType(STATUS_DRAFT)}
-            />
-          </div>
-        </ActionDropdown>
+        <SaveActionList
+          saveAction={() => formRef.current.handleSubmit()}
+          saveType={saveType}
+          setSaveType={setSaveType}
+        />
         <div className="relative">
           <Button
             icon={MenuHorizontal}

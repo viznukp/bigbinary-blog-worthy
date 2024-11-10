@@ -46,9 +46,9 @@ const Edit = ({ handleSubmit, post = {}, formRef }) => {
         size="medium"
       />
       <Select
-        required
         isMulti
         isSearchable
+        required
         label="Category"
         name="categories"
         optionRemapping={{ label: "name", value: "id" }}
