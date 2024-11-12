@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 
+import { capitalize } from "@bigbinary/neeto-cist";
 import { Edit } from "@bigbinary/neeto-icons";
 import { Typography, Button, Tag, Tooltip } from "@bigbinary/neetoui";
 import { useParams, useHistory } from "react-router-dom/cjs/react-router-dom";
@@ -44,7 +45,7 @@ const Show = () => {
           <Tag
             disabled
             className="h-5"
-            label={post.status}
+            label={capitalize(post.status)}
             style={
               post.status === POST_STATUSES.PUBLISHED.STATUS
                 ? "primary"

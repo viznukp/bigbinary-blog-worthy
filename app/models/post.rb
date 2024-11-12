@@ -4,6 +4,7 @@ class Post < ApplicationRecord
   MAX_TITLE_LENGTH = 125
   MAX_DESCRIPTION_LENGTH = 10000
   VALID_TITLE_REGEX = /\A.*[a-zA-Z0-9].*\z/i
+  VALID_STATUSES = ["published", "draft"]
 
   belongs_to :author, foreign_key: "author_id", class_name: "User"
   has_many :votes, dependent: :destroy
@@ -19,7 +20,7 @@ class Post < ApplicationRecord
     length: { maximum: MAX_DESCRIPTION_LENGTH }
   validates :status,
     presence: true
-  validates_inclusion_of :status, in: ["Published", "Draft"]
+  validates_inclusion_of :status, in: VALID_STATUSES
   validates_inclusion_of :is_blog_worthy, in: [true, false]
   validates :slug, uniqueness: true
   validate :slug_not_changed

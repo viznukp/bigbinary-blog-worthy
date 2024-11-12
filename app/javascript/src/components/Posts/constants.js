@@ -1,4 +1,4 @@
 export const POST_STATUSES = {
-  PUBLISHED: { STATUS: "Published", BUTTON_LABEL: "Publish" },
-  DRAFT: { STATUS: "Draft", BUTTON_LABEL: "Save as draft" },
+  PUBLISHED: { STATUS: "published", BUTTON_LABEL: "Publish" },
+  DRAFT: { STATUS: "draft", BUTTON_LABEL: "Save as draft" },
 };

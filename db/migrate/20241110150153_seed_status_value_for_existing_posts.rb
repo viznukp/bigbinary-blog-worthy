@@ -1,7 +1,7 @@
 class SeedStatusValueForExistingPosts < ActiveRecord::Migration[7.0]
   def up
     Post.find_each do |post|
-      post.status = "Published"
+      post.status = "published"
       post.save!(validate: false)
     end
   end
