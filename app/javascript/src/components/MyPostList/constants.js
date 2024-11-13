@@ -23,6 +23,11 @@ export const POSTS_TABLE_SCHEMA = [
     key: "status",
     width: 25,
   },
+  {
+    dataIndex: "actions",
+    key: "actions",
+    width: 25,
+  },
 ];
 
 export const DEFAULT_TABLE_PAGE_SIZE = 10;

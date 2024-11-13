@@ -27,14 +27,12 @@ const PostDisplay = ({
           <Typography style="h1" textTransform="capitalize" weight="extrabold">
             {title}
           </Typography>
-          {status && (
+          {status === POST_STATUSES.DRAFT.STATUS && (
             <Tag
               disabled
               className="h-5"
               label={capitalize(status)}
-              style={
-                status === POST_STATUSES.PUBLISHED.STATUS ? "primary" : "danger"
-              }
+              style="danger"
             />
           )}
         </div>

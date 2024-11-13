@@ -5,6 +5,7 @@ import { Table } from "@bigbinary/neetoui";
 import postsApi from "apis/posts";
 import { PageLoader, Container, PageTitle } from "components/commons";
 
+import ActionsList from "./ActionsList";
 import { POSTS_TABLE_SCHEMA } from "./constants";
 import TitleToLink from "./TitleToLink";
 
@@ -14,6 +15,7 @@ const MyPostList = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedPostsIds, setSelectedPostsIds] = useState([]);
+  const [needReload, setNeedReload] = useState(false);
 
   const transformPostsForTableDisplay = posts =>
     posts.map(({ id, title, slug, status, updatedAt, categories }) => ({
@@ -23,6 +25,13 @@ const MyPostList = () => {
       status,
       category: categories.map(category => category.name).join(", "),
       publishedAt: dateFromTimeStamp(updatedAt),
+      actions: (
+        <ActionsList
+          reloadPosts={() => setNeedReload(!needReload)}
+          slug={slug}
+          status={status}
+        />
+      ),
     }));
 
   const handleSelection = selectedRowKeys => {
@@ -42,7 +51,7 @@ const MyPostList = () => {
 
   useEffect(() => {
     fetchPosts();
-  }, []);
+  }, [needReload]);
 
   if (loading) {
     return (
