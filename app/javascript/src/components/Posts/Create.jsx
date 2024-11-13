@@ -6,8 +6,8 @@ import { useHistory } from "react-router-dom";
 
 import postsApi from "apis/posts";
 import { Container, PageTitle } from "components/commons";
+import { POST_STATUSES } from "components/constants";
 
-import { POST_STATUSES } from "./constants";
 import Form from "./Form";
 import SaveActionList from "./SaveActionList";
 

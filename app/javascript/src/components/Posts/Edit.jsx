@@ -1,14 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import { MenuHorizontal } from "@bigbinary/neeto-icons";
-import { Button } from "@bigbinary/neetoui";
+import { MenuHorizontal, ExternalLink, Close } from "@bigbinary/neeto-icons";
+import { Button, Tooltip, Typography } from "@bigbinary/neetoui";
 import { pluck } from "ramda";
 import { useParams, useHistory } from "react-router-dom/cjs/react-router-dom";
 
 import postsApi from "apis/posts";
-import { Container, PageTitle, PageLoader } from "components/commons";
+import {
+  Container,
+  PageTitle,
+  PageLoader,
+  PostDisplay,
+} from "components/commons";
+import { POST_STATUSES } from "components/constants";
 
-import { POST_STATUSES } from "./constants";
 import Form from "./Form";
 import SaveActionList from "./SaveActionList";
 
@@ -20,6 +25,8 @@ const Edit = () => {
   const formRef = useRef();
   const [saveType, setSaveType] = useState(POST_STATUSES.DRAFT.STATUS);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isPreviewEnabled, setIsPreviewEnabled] = useState(false);
+  const [previewData, setPreviewData] = useState({});
 
   const fetchPost = async () => {
     setIsLoading(true);
@@ -68,6 +75,19 @@ const Edit = () => {
   return (
     <Container>
       <PageTitle title="Edit blog post">
+        <Tooltip content="Preview">
+          <Button
+            icon={ExternalLink}
+            style="text"
+            onClick={() => {
+              setPreviewData({
+                ...formRef.current.values,
+                updatedAt: new Date().toLocaleString(),
+              });
+              setIsPreviewEnabled(true);
+            }}
+          />
+        </Tooltip>
         <Button
           label="Cancel"
           style="secondary"
@@ -102,6 +122,19 @@ const Edit = () => {
         post={post}
         slug={slug}
       />
+      {isPreviewEnabled && (
+        <div className="mt-6 rounded-md border p-4">
+          <div className="flex gap-3">
+            <Typography>Preview</Typography>
+            <Button
+              icon={Close}
+              style="danger-text"
+              onClick={() => setIsPreviewEnabled(false)}
+            />
+          </div>
+          <PostDisplay {...previewData} />
+        </div>
+      )}
     </Container>
   );
 };

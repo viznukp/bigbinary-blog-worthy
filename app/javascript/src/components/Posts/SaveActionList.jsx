@@ -3,7 +3,7 @@ import React from "react";
 import { Check } from "@bigbinary/neeto-icons";
 import { Button, ActionDropdown } from "@bigbinary/neetoui";
 
-import { POST_STATUSES } from "./constants";
+import { POST_STATUSES } from "components/constants";
 
 const SaveActionList = ({ saveAction, saveType, setSaveType }) => {
   const {
