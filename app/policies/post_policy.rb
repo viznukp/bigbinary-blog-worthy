@@ -33,13 +33,19 @@ class PostPolicy
     end
 
     def resolve
-      scope.includes(:author).where(usersInSameOrganizationAsCurrentUser)
+      scope.includes(:author)
+        .where(usersInSameOrganizationAsCurrentUser)
+        .where(excludeDraftsFromOtherUsers)
     end
 
     private
 
       def usersInSameOrganizationAsCurrentUser
         { users: { organization_id: user.organization_id } }
+      end
+
+      def excludeDraftsFromOtherUsers
+        ["status != ? OR author_id = ?", "draft", user.id]
       end
   end
 end
