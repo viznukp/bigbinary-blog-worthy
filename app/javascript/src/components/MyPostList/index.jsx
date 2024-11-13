@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 
-import { Table, Typography } from "@bigbinary/neetoui";
+import {
+  Table,
+  Typography,
+  ActionDropdown,
+  Checkbox,
+} from "@bigbinary/neetoui";
 
 import postsApi from "apis/posts";
 import { PageLoader, Container, PageTitle } from "components/commons";
@@ -64,7 +69,24 @@ const MyPostList = () => {
   return (
     <Container>
       <PageTitle title="My blog posts" />
-      <Typography>{`${posts.length} articles`}</Typography>
+      <div className="mb-3 flex justify-between">
+        <Typography>{`${posts.length} articles`}</Typography>
+        <ActionDropdown
+          label="Columns"
+          buttonProps={{
+            className: "bg-gray-300 text-black",
+          }}
+          dropdownProps={{
+            buttonProps: {
+              className: "bg-gray-300 text-black",
+            },
+          }}
+        >
+          <div className="flex flex-col p-4">
+            <Checkbox label="Title" />
+          </div>
+        </ActionDropdown>
+      </div>
       <Table
         rowSelection
         columnData={POSTS_TABLE_SCHEMA}
