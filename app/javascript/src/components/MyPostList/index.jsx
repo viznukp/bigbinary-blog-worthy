@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { Table } from "@bigbinary/neetoui";
+import { Table, Typography } from "@bigbinary/neetoui";
 
 import postsApi from "apis/posts";
 import { PageLoader, Container, PageTitle } from "components/commons";
@@ -64,12 +64,12 @@ const MyPostList = () => {
   return (
     <Container>
       <PageTitle title="My blog posts" />
+      <Typography>{`${posts.length} articles`}</Typography>
       <Table
         rowSelection
         columnData={POSTS_TABLE_SCHEMA}
         rowData={posts ? transformPostsForTableDisplay(posts) : []}
         selectedRowKeys={selectedPostsIds}
-        totalCount={posts.length}
         onRowSelect={handleSelection}
       />
     </Container>
