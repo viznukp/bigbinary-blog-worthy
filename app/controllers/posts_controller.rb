@@ -43,9 +43,11 @@ class PostsController < ApplicationController
 
     def filter_by_categories_if_categories_is_present
       categories = filter_params[:categories]
-      categories.present? ?
-        Post.includes(:categories).where(categories: { name: categories }) :
-        Post.includes(:categories)
+      posts = categories.present? ?
+        Post.where(id: Post.joins(:categories).where(categories: { name: categories }).select(:id)) :
+        Post.all
+
+      posts.includes(:categories)
     end
 
     def post_params
