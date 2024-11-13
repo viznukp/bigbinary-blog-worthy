@@ -45,7 +45,9 @@ const MyPostList = () => {
 
   const fetchPosts = async () => {
     try {
-      const { posts } = await postsApi.fetch();
+      const { posts } = await postsApi.fetch({
+        filters: { user: "current" },
+      });
       setPosts(posts);
     } catch (error) {
       logger.error(error);

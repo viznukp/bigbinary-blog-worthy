@@ -7,7 +7,7 @@ class PostsController < ApplicationController
 
   def index
     @posts = policy_scope(
-      filter_by_categories_if_categories_is_present()
+      filter_posts
     )
 
     @user_votes = current_user
@@ -41,13 +41,18 @@ class PostsController < ApplicationController
 
   private
 
-    def filter_by_categories_if_categories_is_present
-      categories = filter_params[:categories]
-      posts = categories.present? ?
-        Post.where(id: Post.joins(:categories).where(categories: { name: categories }).select(:id)) :
-        Post.all
+    def filter_posts
+      posts = Post.all
 
-      posts.includes(:categories)
+      if filter_params[:categories].present?
+        posts = posts.joins(:categories).where(categories: { name: filter_params[:categories] })
+      end
+
+      if filter_params[:user] == "current"
+        posts = posts.where(author: current_user)
+      end
+
+      posts = posts.includes(:categories)
     end
 
     def post_params
@@ -57,7 +62,7 @@ class PostsController < ApplicationController
     end
 
     def filter_params
-      params.fetch(:filters, {}).permit(categories: [])
+      params.fetch(:filters, {}).permit(:user, categories: [])
     end
 
     def load_post
