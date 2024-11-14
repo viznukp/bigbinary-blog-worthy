@@ -27,6 +27,15 @@ const ActionsList = ({ status, slug, reloadPosts }) => {
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      await postsApi.destroy(slug);
+      reloadPosts();
+    } catch (error) {
+      logger.error(error);
+    }
+  };
+
   return (
     <Dropdown buttonStyle="text" icon={MenuHorizontal} strategy="fixed">
       <div className="flex flex-col">
@@ -37,7 +46,7 @@ const ActionsList = ({ status, slug, reloadPosts }) => {
           }
           onClick={handleUpdate}
         />
-        <Button label="Delete" style="danger-text" />
+        <Button label="Delete" style="danger-text" onClick={handleDelete} />
       </div>
     </Dropdown>
   );
