@@ -4,6 +4,7 @@ export const POSTS_TABLE_SCHEMA = [
     dataIndex: "title",
     key: "title",
     width: 100,
+    isDisabledInColumnFilter: true,
   },
   {
     title: "CATEGORY",
@@ -27,6 +28,7 @@ export const POSTS_TABLE_SCHEMA = [
     dataIndex: "actions",
     key: "actions",
     width: 25,
+    excludeFromColumnFilter: true,
   },
 ];
 

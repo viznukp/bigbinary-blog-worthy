@@ -6,6 +6,7 @@ import {
   ActionDropdown,
   Checkbox,
 } from "@bigbinary/neetoui";
+import { without } from "ramda";
 
 import postsApi from "apis/posts";
 import { PageLoader, Container, PageTitle } from "components/commons";
@@ -21,6 +22,8 @@ const MyPostList = () => {
   const [loading, setLoading] = useState(true);
   const [selectedPostsIds, setSelectedPostsIds] = useState([]);
   const [needReload, setNeedReload] = useState(false);
+  const [visibleColumns, setVisibleColumns] = useState(POSTS_TABLE_SCHEMA);
+  const [columnsToHide, setColumnsToHide] = useState([]);
 
   const transformPostsForTableDisplay = posts =>
     posts.map(({ id, title, slug, status, updatedAt, categories }) => ({
@@ -38,6 +41,18 @@ const MyPostList = () => {
         />
       ),
     }));
+
+  const filterColumns = columns =>
+    POSTS_TABLE_SCHEMA.filter(column => !columns.includes(column.key));
+
+  const handleColumnFilterChange = key => {
+    const updatedColumnsToHide = columnsToHide.includes(key)
+      ? without([key], columnsToHide)
+      : [...columnsToHide, key];
+
+    setColumnsToHide(updatedColumnsToHide);
+    setVisibleColumns(filterColumns(updatedColumnsToHide));
+  };
 
   const handleSelection = selectedRowKeys => {
     setSelectedPostsIds(selectedRowKeys);
@@ -84,14 +99,31 @@ const MyPostList = () => {
             },
           }}
         >
-          <div className="flex flex-col p-4">
-            <Checkbox label="Title" />
+          <div className="flex flex-col gap-3 p-4">
+            {POSTS_TABLE_SCHEMA.map(
+              ({
+                title,
+                key,
+                excludeFromColumnFilter,
+                isDisabledInColumnFilter,
+              }) =>
+                !excludeFromColumnFilter && (
+                  <Checkbox
+                    checked={!columnsToHide.includes(key)}
+                    disabled={isDisabledInColumnFilter}
+                    key={key}
+                    label={title}
+                    value={key}
+                    onChange={() => handleColumnFilterChange(key)}
+                  />
+                )
+            )}
           </div>
         </ActionDropdown>
       </div>
       <Table
         rowSelection
-        columnData={POSTS_TABLE_SCHEMA}
+        columnData={visibleColumns}
         rowData={posts ? transformPostsForTableDisplay(posts) : []}
         selectedRowKeys={selectedPostsIds}
         onRowSelect={handleSelection}
