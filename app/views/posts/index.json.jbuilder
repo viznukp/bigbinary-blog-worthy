@@ -16,4 +16,12 @@ json.posts @posts do |post|
     json.extract! post.author,
       :name
   end
+
+  json.categories post.categories.map(&:name)
+
+  json.categories post.categories do |category|
+    json.extract! category,
+      :id,
+      :name
+  end
 end

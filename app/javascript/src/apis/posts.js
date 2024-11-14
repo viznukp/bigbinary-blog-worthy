@@ -1,6 +1,14 @@
 import axios from "axios";
+import qs from "qs";
 
-const fetch = () => axios.get("/posts");
+// const fetch = filters => axios.get("/posts", { params: filters });
+
+const fetch = filters =>
+  axios.get("/posts", {
+    params: filters,
+    paramsSerializer: params =>
+      qs.stringify(params, { arrayFormat: "brackets" }),
+  });
 
 const create = payload => axios.post("/posts", { post: payload });
 
