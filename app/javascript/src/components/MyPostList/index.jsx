@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 
+import { Filter as FilterIcon } from "@bigbinary/neeto-icons";
 import {
   Table,
   Typography,
   ActionDropdown,
   Checkbox,
+  Button,
 } from "@bigbinary/neetoui";
 import { without } from "ramda";
 
@@ -13,6 +15,7 @@ import { PageLoader, Container, PageTitle } from "components/commons";
 
 import ActionsList from "./ActionsList";
 import { POSTS_TABLE_SCHEMA } from "./constants";
+import Filter from "./Filter";
 import TitleToLink from "./TitleToLink";
 
 import { dateFromTimeStamp } from "../../utils/dateTime";
@@ -24,6 +27,8 @@ const MyPostList = () => {
   const [needReload, setNeedReload] = useState(false);
   const [visibleColumns, setVisibleColumns] = useState(POSTS_TABLE_SCHEMA);
   const [columnsToHide, setColumnsToHide] = useState([]);
+  const [isFilterPaneOpen, setIsFilterPaneOpen] = useState(false);
+  const [filterParams, setFilterParams] = useState({ user: "current" });
 
   const transformPostsForTableDisplay = posts =>
     posts.map(({ id, title, slug, status, updatedAt, categories }) => ({
@@ -54,14 +59,14 @@ const MyPostList = () => {
     setVisibleColumns(filterColumns(updatedColumnsToHide));
   };
 
-  const handleSelection = selectedRowKeys => {
+  const handleRowSelection = selectedRowKeys => {
     setSelectedPostsIds(selectedRowKeys);
   };
 
   const fetchPosts = async () => {
     try {
       const { posts } = await postsApi.fetch({
-        filters: { user: "current" },
+        filters: filterParams,
       });
       setPosts(posts);
     } catch (error) {
@@ -73,7 +78,7 @@ const MyPostList = () => {
 
   useEffect(() => {
     fetchPosts();
-  }, [needReload]);
+  }, [needReload, filterParams]);
 
   if (loading) {
     return (
@@ -88,45 +93,57 @@ const MyPostList = () => {
       <PageTitle title="My blog posts" />
       <div className="mb-3 flex justify-between">
         <Typography>{`${posts.length} articles`}</Typography>
-        <ActionDropdown
-          label="Columns"
-          buttonProps={{
-            className: "bg-gray-300 text-black",
-          }}
-          dropdownProps={{
-            buttonProps: {
+        <div className="flex gap-2">
+          <ActionDropdown
+            label="Columns"
+            buttonProps={{
               className: "bg-gray-300 text-black",
-            },
-          }}
-        >
-          <div className="flex flex-col gap-3 p-4">
-            {POSTS_TABLE_SCHEMA.map(
-              ({
-                title,
-                key,
-                excludeFromColumnFilter,
-                isDisabledInColumnFilter,
-              }) =>
-                !excludeFromColumnFilter && (
-                  <Checkbox
-                    checked={!columnsToHide.includes(key)}
-                    disabled={isDisabledInColumnFilter}
-                    key={key}
-                    label={title}
-                    value={key}
-                    onChange={() => handleColumnFilterChange(key)}
-                  />
-                )
-            )}
-          </div>
-        </ActionDropdown>
+            }}
+            dropdownProps={{
+              buttonProps: {
+                className: "bg-gray-300 text-black",
+              },
+            }}
+          >
+            <div className="flex flex-col gap-3 p-4">
+              {POSTS_TABLE_SCHEMA.map(
+                ({
+                  title,
+                  key,
+                  excludeFromColumnFilter,
+                  isDisabledInColumnFilter,
+                }) =>
+                  !excludeFromColumnFilter && (
+                    <Checkbox
+                      checked={!columnsToHide.includes(key)}
+                      disabled={isDisabledInColumnFilter}
+                      key={key}
+                      label={title}
+                      value={key}
+                      onChange={() => handleColumnFilterChange(key)}
+                    />
+                  )
+              )}
+            </div>
+          </ActionDropdown>
+          <Button
+            icon={FilterIcon}
+            style="text"
+            onClick={() => setIsFilterPaneOpen(!isFilterPaneOpen)}
+          />
+        </div>
       </div>
       <Table
         rowSelection
         columnData={visibleColumns}
         rowData={posts ? transformPostsForTableDisplay(posts) : []}
         selectedRowKeys={selectedPostsIds}
-        onRowSelect={handleSelection}
+        onRowSelect={handleRowSelection}
+      />
+      <Filter
+        closeFilter={() => setIsFilterPaneOpen(false)}
+        isOpen={isFilterPaneOpen}
+        setFilterParams={setFilterParams}
       />
     </Container>
   );

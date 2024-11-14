@@ -52,6 +52,14 @@ class PostsController < ApplicationController
         posts = posts.where(author: current_user)
       end
 
+      if filter_params[:status].present?
+        posts = posts.where(status: filter_params[:status])
+      end
+
+      if filter_params[:title].present?
+        posts = posts.where("LOWER(title) LIKE ?", "%#{filter_params[:title].downcase}%")
+      end
+
       posts = posts.includes(:categories)
     end
 
@@ -62,7 +70,7 @@ class PostsController < ApplicationController
     end
 
     def filter_params
-      params.fetch(:filters, {}).permit(:user, categories: [])
+      params.fetch(:filters, {}).permit(:user, :title, :status, categories: [])
     end
 
     def load_post

@@ -32,5 +32,8 @@ export const POSTS_TABLE_SCHEMA = [
   },
 ];
 
-export const DEFAULT_TABLE_PAGE_SIZE = 10;
-export const DEFAULT_TABLE_PAGE_INDEX = 1;
+export const FILTER_INITIAL_VALUES = {
+  title: "",
+  categories: [],
+  status: "",
+};
