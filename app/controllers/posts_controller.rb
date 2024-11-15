@@ -33,10 +33,35 @@ class PostsController < ApplicationController
     render_notice(t("successfully_updated", entity: "Post"))
   end
 
+  def bulk_update
+    update_fields = bulk_update_params[:update_fields]
+    Post.where(slug: bulk_update_params[:slugs]).find_in_batches do |posts|
+      posts.each do |post|
+        authorize post, :update?
+        if post.status != update_fields[:status]
+          post.update!(update_fields)
+        end
+      end
+    end
+
+    render_notice(t("successfully_updated", entity: "Posts"))
+  end
+
   def destroy
     authorize @post
     @post.destroy!
     render_notice(t("successfully_deleted", entity: "Post"))
+  end
+
+  def bulk_destroy
+    Post.where(slug: bulk_destroy_params[:slugs]).find_in_batches do |posts|
+      posts.each do |post|
+        authorize post, :destroy?
+        post.destroy!
+      end
+    end
+
+    render_notice(t("successfully_deleted", entity: "Posts"))
   end
 
   private
@@ -67,6 +92,15 @@ class PostsController < ApplicationController
       params.require(:post)
         .permit(:title, :description, :status, category_ids: [])
         .merge(author: current_user)
+    end
+
+    def bulk_update_params
+      params.require(:posts)
+        .permit(update_fields: [:status], slugs: [])
+    end
+
+    def bulk_destroy_params
+      params.require(:posts).permit(slugs: [])
     end
 
     def filter_params
