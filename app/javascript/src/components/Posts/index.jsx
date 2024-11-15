@@ -15,6 +15,7 @@ const Posts = () => {
   const [loading, setLoading] = useState(true);
   const [isCategoryListVisible, setIsCategoryListVisible] = useState(false);
   const [filterCategories, setFilterCategories] = useState([]);
+  const [needPostReload, setNeedPostReload] = useState(false);
   const history = useHistory();
 
   const fetchPosts = async () => {
@@ -32,7 +33,7 @@ const Posts = () => {
 
   useEffect(() => {
     fetchPosts();
-  }, [filterCategories]);
+  }, [filterCategories, needPostReload]);
 
   if (loading) {
     return (
@@ -68,7 +69,7 @@ const Posts = () => {
       ) : (
         <div className="mt-4 flex flex-col gap-2">
           {posts.map(post => (
-            <Card key={post.slug} post={post} />
+            <Card key={post.slug} post={post} reloadPosts={()=>setNeedPostReload(!needPostReload)}/>
           ))}
         </div>
       )}

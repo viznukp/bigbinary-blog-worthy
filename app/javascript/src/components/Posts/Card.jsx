@@ -8,7 +8,7 @@ import { dateFromTimeStamp } from "utils/dateTime";
 
 import BlogWorthyIndicator from "./BlogWorthyIndicator";
 
-const Card = ({ post }) => {
+const Card = ({ post, reloadPosts }) => {
   const { upvotes: upVotes, downvotes: downVotes } = post;
   const history = useHistory();
 
@@ -17,7 +17,7 @@ const Card = ({ post }) => {
 
     try {
       await votesApi.create(payload);
-      history.go(0);
+      reloadPosts();
     } catch (error) {
       logger.error(error);
     }
@@ -47,11 +47,11 @@ const Card = ({ post }) => {
             >
               {post.title}
             </Typography>
-            <BlogWorthyIndicator show={post.is_blog_worthy} />
+            {post.isBlogWorthy && <Tag label="BlogIt" />}
           </div>
           <div className="flex gap-2 py-2">
             {post.categories?.map(({ id, name }) => (
-              <Tag key={id} label={name} />
+              <Tag key={id} label={name} type="solid" />
             ))}
           </div>
           <Typography
