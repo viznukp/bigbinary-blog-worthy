@@ -13,7 +13,9 @@ const DEFAULT_ERROR_NOTIFICATION = "Something went wrong!";
 axios.defaults.baseURL = "/";
 
 const transformResponseKeysToCamelCase = response => {
-  if (response.data) response.data = keysToCamelCase(response.data);
+  if (response.data && !(response.data instanceof Blob)) {
+    response.data = keysToCamelCase(response.data);
+  }
 };
 
 const setAuthHeaders = () => {

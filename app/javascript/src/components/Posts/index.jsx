@@ -69,7 +69,11 @@ const Posts = () => {
       ) : (
         <div className="mt-4 flex flex-col gap-2">
           {posts.map(post => (
-            <Card key={post.slug} post={post} reloadPosts={()=>setNeedPostReload(!needPostReload)}/>
+            <Card
+              key={post.slug}
+              post={post}
+              reloadPosts={() => setNeedPostReload(!needPostReload)}
+            />
           ))}
         </div>
       )}

@@ -9,6 +9,7 @@ import { PrivateRoute } from "components/commons";
 import Home from "components/Home";
 import MyPostList from "components/MyPostList";
 import Create from "components/Posts/Create";
+import DownloadPost from "components/Posts/DownloadPost";
 import Edit from "components/Posts/Edit";
 import Show from "components/Posts/Show";
 import { getFromLocalStorage } from "utils/storage";
@@ -27,6 +28,7 @@ const App = () => {
         <Route exact component={Login} path="/login" />
         <Route exact component={Edit} path="/posts/:slug/edit" />
         <Route exact component={MyPostList} path="/posts/mine" />
+        <Route exact component={DownloadPost} path="/posts/:slug/download" />;
         <PrivateRoute
           component={Home}
           condition={isLoggedIn}

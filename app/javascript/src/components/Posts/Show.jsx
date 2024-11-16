@@ -30,7 +30,7 @@ const Show = () => {
 
   return (
     <Container>
-      <PostDisplay {...post} editButtonEnabled />
+      <PostDisplay {...post} downloadEnabled editEnabled />
     </Container>
   );
 };

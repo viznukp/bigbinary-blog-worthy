@@ -1,0 +1,16 @@
+<div>
+  <h1>
+    <%= @post.title.capitalize %>
+  </h1>
+  <div class="flexrow">
+    <% @post.categories.each do |category| %>
+      <span class="tag"><%= category.name %></span>
+    <% end %>
+  </div>
+  <p>
+    <%= @post.author.name %>
+  </p>
+  <p>
+    <%= @post.description %>
+  </p>
+<div>

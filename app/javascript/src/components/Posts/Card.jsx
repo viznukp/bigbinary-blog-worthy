@@ -6,8 +6,6 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import votesApi from "apis/votes";
 import { dateFromTimeStamp } from "utils/dateTime";
 
-import BlogWorthyIndicator from "./BlogWorthyIndicator";
-
 const Card = ({ post, reloadPosts }) => {
   const { upvotes: upVotes, downvotes: downVotes } = post;
   const history = useHistory();
