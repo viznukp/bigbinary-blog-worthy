@@ -2,8 +2,7 @@
 
 class Posts::ReportsController < ApplicationController
   def create
-    ReportsJob.perform_async(report_params[:slug], report_path)
-    render_notice(t("in_progress", action: "Report generation"))
+    ReportsJob.perform_async(current_user.id, report_params[:slug], report_path)
   end
 
   def download

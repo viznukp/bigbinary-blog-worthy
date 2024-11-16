@@ -1,21 +1,17 @@
 import React, { useState, useEffect } from "react";
 
-import { Toastr, Modal, ProgressBar } from "@bigbinary/neetoui";
+import { Modal, ProgressBar } from "@bigbinary/neetoui";
+import createConsumer from "channels/consumer";
+import { subscribeToPostDownloadChannel } from "channels/PostDownloadChannel";
 
 import postsApi from "apis/posts";
 
 const DownloadPost = ({ slug, onDownloadComplete }) => {
   const [progress, setProgress] = useState(0);
+  const [message, setMessage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(true);
 
-  const generatePdf = async () => {
-    try {
-      await postsApi.generatePdf(slug);
-      setProgress(50);
-    } catch (error) {
-      logger.error(error);
-    }
-  };
+  const consumer = createConsumer();
 
   const saveAs = ({ blob, fileName }) => {
     const objectUrl = window.URL.createObjectURL(blob);
@@ -23,7 +19,6 @@ const DownloadPost = ({ slug, onDownloadComplete }) => {
     link.href = objectUrl;
     link.setAttribute("download", fileName);
     document.body.appendChild(link);
-    setProgress(100);
     link.click();
     link.parentNode.removeChild(link);
     setTimeout(() => window.URL.revokeObjectURL(objectUrl), 150);
@@ -32,7 +27,6 @@ const DownloadPost = ({ slug, onDownloadComplete }) => {
 
   const downloadPdf = async () => {
     try {
-      Toastr.success("Downloading report...");
       const data = await postsApi.download();
       saveAs({ blob: data, fileName: "post_pdf_report.pdf" });
     } catch (error) {
@@ -40,17 +34,38 @@ const DownloadPost = ({ slug, onDownloadComplete }) => {
     }
   };
 
+  const generatePdf = async () => {
+    try {
+      await postsApi.generatePdf(slug);
+    } catch (error) {
+      logger.error(error);
+    }
+  };
+
   useEffect(() => {
-    generatePdf();
-    setTimeout(() => {
-      downloadPdf();
-    }, 5000);
+    subscribeToPostDownloadChannel({
+      consumer,
+      setMessage,
+      setProgress,
+      generatePdf,
+    });
+
+    return () => {
+      consumer.disconnect();
+    };
   }, []);
+
+  useEffect(() => {
+    if (progress === 100) {
+      downloadPdf();
+    }
+  }, [progress]);
 
   return (
     <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
       <div className="px-12 py-16">
         <ProgressBar progressPercentage={progress} />
+        {message}
       </div>
     </Modal>
   );

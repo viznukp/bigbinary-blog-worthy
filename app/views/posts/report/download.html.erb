@@ -4,7 +4,7 @@
   </h1>
   <div class="flexrow">
     <% @post.categories.each do |category| %>
-      <span class="tag"><%= category.name %></span>
+      <span class="tag"><%= category.name.capitalize %></span>
     <% end %>
   </div>
   <p class="text-gray-500">
