@@ -4,14 +4,24 @@ import { Typography, Tag } from "@bigbinary/neetoui";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 
 import votesApi from "apis/votes";
-import { dateFromTimeStamp } from "utils/dateTime";
+import { dateFromTimeStamp, timeFromTimeStamp } from "utils/dateTime";
 
 const Card = ({ post, reloadPosts }) => {
-  const { upvotes: upVotes, downvotes: downVotes } = post;
+  const {
+    title,
+    slug,
+    categories = [],
+    description,
+    author,
+    isBlogWorthy,
+    upvotes,
+    downvotes,
+    updatedAt,
+  } = post;
   const history = useHistory();
 
   const updateVote = async voteType => {
-    const payload = { vote_type: voteType, slug: post.slug };
+    const payload = { vote_type: voteType, slug };
 
     try {
       await votesApi.create(payload);
@@ -41,14 +51,14 @@ const Card = ({ post, reloadPosts }) => {
             <Typography
               className="cursor-pointer text-lg font-bold hover:text-blue-500"
               textTransform="capitalize"
-              onClick={() => history.push(`/posts/${post.slug}/show`)}
+              onClick={() => history.push(`/posts/${slug}/show`)}
             >
-              {post.title}
+              {title}
             </Typography>
-            {post.isBlogWorthy && <Tag label="BlogIt" />}
+            {isBlogWorthy && <Tag label="BlogIt" />}
           </div>
           <div className="flex gap-2 py-2">
-            {post.categories?.map(({ id, name }) => (
+            {categories?.map(({ id, name }) => (
               <Tag key={id} label={name} type="solid" />
             ))}
           </div>
@@ -56,10 +66,11 @@ const Card = ({ post, reloadPosts }) => {
             className="mr-2 inline-block border-r-2 pr-2 text-xs text-gray-500"
             textTransform="capitalize"
           >
-            {post.author.name}
+            {author?.name}
           </Typography>
           <Typography className="inline-block pr-2 text-xs  text-gray-400">
-            {dateFromTimeStamp(post.updatedAt)}
+            {`${dateFromTimeStamp(updatedAt)},
+              ${timeFromTimeStamp(updatedAt)} `}
           </Typography>
         </div>
         <div className="flex items-center space-x-1">
@@ -69,14 +80,14 @@ const Card = ({ post, reloadPosts }) => {
           >
             <i className="ri-arrow-up-s-fill" />
           </button>
-          <span> {abbreviatedVoteRepresentation(upVotes)}</span>
+          <span> {abbreviatedVoteRepresentation(upvotes)}</span>
           <button
             className=" flex items-center justify-center rounded-md bg-red-400 p-1 font-semibold text-white shadow-md transition-all duration-300 hover:bg-red-500"
             onClick={() => updateVote("downvote")}
           >
             <i className="ri-arrow-down-s-fill" />
           </button>
-          <span>{abbreviatedVoteRepresentation(downVotes)}</span>
+          <span>{abbreviatedVoteRepresentation(downvotes)}</span>
         </div>
       </div>
       <p
@@ -87,7 +98,7 @@ const Card = ({ post, reloadPosts }) => {
           WebkitBoxOrient: "vertical",
         }}
       >
-        {post.description}
+        {description}
       </p>
     </div>
   );

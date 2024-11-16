@@ -7,9 +7,12 @@
       <span class="tag"><%= category.name %></span>
     <% end %>
   </div>
-  <p>
-    <%= @post.author.name %>
+  <p class="text-gray-500">
+    <span class="border-r pr-2"><%= @post.author.name %></span>
+    <%= formatted_date(@post.updated_at) %>,
+    <%= formatted_time(@post.updated_at)  %>
   </p>
+
   <p>
     <%= @post.description %>
   </p>

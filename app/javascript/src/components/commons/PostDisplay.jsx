@@ -7,7 +7,7 @@ import { useParams, useHistory } from "react-router-dom/cjs/react-router-dom";
 
 import { POST_STATUSES } from "components/constants";
 import DownloadPost from "components/Posts/DownloadPost";
-import { dateFromTimeStamp } from "utils/dateTime";
+import { dateFromTimeStamp, timeFromTimeStamp } from "utils/dateTime";
 
 const PostDisplay = ({
   title,
@@ -78,7 +78,7 @@ const PostDisplay = ({
         {author.name}
       </Typography>
       <Typography className="inline-block pr-2 text-xs  text-gray-400">
-        {dateFromTimeStamp(updatedAt)}
+        {`${dateFromTimeStamp(updatedAt)}, ${timeFromTimeStamp(updatedAt)} `}
       </Typography>
       <Typography className="mt-3">{description}</Typography>
       {isDownloadActive && (
