@@ -96,4 +96,30 @@ class UserTest < ActiveSupport::TestCase
 
     assert_not_same @user.authentication_token, second_user.authentication_token
   end
+
+  def test_values_of_created_at_and_updated_at
+    user = build(:user, name: "Sherlock Holmes")
+    assert_nil user.created_at
+    assert_nil user.updated_at
+
+    user.save!
+    assert_not_nil user.created_at
+    assert_equal user.updated_at, user.created_at
+
+    user.update!(name: "Dr. Watson")
+    assert_not_equal user.updated_at, user.created_at
+  end
+
+  def test_user_count_increases_on_saving
+    assert_difference ["User.count"] do
+      create(:user)
+    end
+  end
+
+  def test_user_count_decreases_on_deleting
+    user = create(:user)
+    assert_difference ["User.count"], -1 do
+      user.destroy!
+    end
+  end
 end

@@ -112,16 +112,7 @@ class PostTest < ActiveSupport::TestCase
   end
 
   def test_values_of_created_at_and_updated_at
-    author = build(:user)
-    post = Post.new(
-      title: "This is a test post",
-      description: "This is a sample description for test",
-      author:,
-      upvotes: 0,
-      downvotes: 0,
-      is_blog_worthy: false,
-      status: "published"
-    )
+    post = build(:post, title: "This is a sample post")
     assert_nil post.created_at
     assert_nil post.updated_at
 
