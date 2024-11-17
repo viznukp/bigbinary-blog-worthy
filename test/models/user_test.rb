@@ -5,6 +5,7 @@ require "test_helper"
 class UserTest < ActiveSupport::TestCase
   def setup
     @user = build(:user)
+    puts @user.organization.inspect
   end
 
   def test_user_should_not_be_valid_and_saved_without_name
