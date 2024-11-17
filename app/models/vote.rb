@@ -19,6 +19,6 @@ class Vote < ApplicationRecord
 
     def update_post_blog_worthy_status
       post.reload
-      post.update_blog_worthy_status
+      post.save!
     end
 end
