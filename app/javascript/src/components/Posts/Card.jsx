@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Typography, Tag } from "@bigbinary/neetoui";
+import classnames from "classnames";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 
 import votesApi from "apis/votes";
@@ -16,12 +17,13 @@ const Card = ({ post, reloadPosts }) => {
     isBlogWorthy,
     upvotes,
     downvotes,
+    voteType,
     updatedAt,
   } = post;
   const history = useHistory();
 
   const updateVote = async voteType => {
-    const payload = { vote_type: voteType, slug };
+    const payload = { voteType, slug };
 
     try {
       await votesApi.create(payload);
@@ -75,14 +77,20 @@ const Card = ({ post, reloadPosts }) => {
         </div>
         <div className="flex items-center space-x-1">
           <button
-            className=" flex items-center justify-center rounded-md bg-green-400 p-1 font-semibold text-white shadow-md transition-all duration-300 hover:bg-green-500"
+            className={classnames(
+              " flex items-center justify-center rounded-md bg-gray-300  p-1 font-semibold text-white shadow-md transition-all duration-300 hover:bg-gray-400",
+              { "bg-green-400": voteType === "upvote" }
+            )}
             onClick={() => updateVote("upvote")}
           >
             <i className="ri-arrow-up-s-fill" />
           </button>
           <span> {abbreviatedVoteRepresentation(upvotes)}</span>
           <button
-            className=" flex items-center justify-center rounded-md bg-red-400 p-1 font-semibold text-white shadow-md transition-all duration-300 hover:bg-red-500"
+            className={classnames(
+              " flex items-center justify-center rounded-md bg-gray-300  p-1 font-semibold text-white shadow-md transition-all duration-300 hover:bg-gray-400",
+              { "bg-red-400": voteType === "downvote" }
+            )}
             onClick={() => updateVote("downvote")}
           >
             <i className="ri-arrow-down-s-fill" />
