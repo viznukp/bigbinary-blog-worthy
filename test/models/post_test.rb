@@ -187,7 +187,6 @@ class PostTest < ActiveSupport::TestCase
     third_post = create(:post, title:)
     fourth_post = create(:post, title:)
 
-
     assert_equal "#{title.parameterize}-4", fourth_post.slug
 
     third_post.destroy

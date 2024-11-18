@@ -5,7 +5,7 @@ require "test_helper"
 class PostsControllerTest < ActionDispatch::IntegrationTest
   def setup
     @author = create(:user)
-    @post = create(:post, author: @author)
+    @post = create(:post, author: @author, status: "published")
     @author_headers = headers(@author)
     @category = create(:category)
   end
@@ -85,11 +85,128 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal I18n.t("authorization.denied"), response_json["error"]
   end
 
-  def test_not_found_error_rendered_for_invalid_task_slug
+  def test_not_found_error_rendered_for_invalid_post_slug
     invalid_slug = "invalid-slug"
 
     get post_path(invalid_slug), headers: @author_headers
     assert_response :not_found
     assert_equal I18n.t("not_found", entity: "Post"), response.parsed_body["error"]
+  end
+
+  def test_should_show_valid_post
+    post = create(:post, author: @author)
+
+    get post_path(post.slug), headers: @author_headers
+    assert_response :success
+    response_json = response.parsed_body["post"]
+    assert_equal post.id, response_json["id"]
+  end
+
+  def test_should_bulk_update_posts_status
+    posts = create_list(:post, 3, author: @author, status: "draft")
+    update_params = {
+      posts: {
+        slugs: posts.map(&:slug),
+        update_fields: { status: "published" }
+      }
+    }
+
+    put bulk_update_posts_path, params: update_params, headers: @author_headers
+    assert_response :success
+
+    response_json = response.parsed_body
+    assert_equal I18n.t("successfully_updated", entity: "Posts"), response_json["notice"]
+
+    posts.each do |post|
+      assert_equal "published", post.reload.status
+    end
+  end
+
+  def test_should_bulk_destroy_posts
+    posts = create_list(:post, 3, author: @author)
+
+    delete bulk_destroy_posts_path, params: { posts: { slugs: posts.map(&:slug) } }, headers: @author_headers
+    assert_response :success
+
+    response_json = response.parsed_body
+    assert_equal I18n.t("successfully_deleted", entity: "Posts"), response_json["notice"]
+
+    posts.each do |post|
+      assert_nil Post.find_by(id: post.id)
+    end
+  end
+
+  def test_filter_posts_by_categories
+    category1 = create(:category, name: "Tech")
+    category2 = create(:category, name: "Health")
+    post1 = create(:post, categories: [category1], author: @author)
+    create(:post, categories: [category2], author: @author)
+
+    get posts_path(filters: { categories: ["Tech"] }), headers: @author_headers
+    assert_response :success
+    response_json = response.parsed_body["posts"]
+
+    assert_equal [post1.id], response_json.map { |post| post["id"] }
+  end
+
+  def test_filter_posts_by_current_user
+    other_user = create(:user)
+    create(:post, author: other_user)
+
+    get posts_path(filters: { user: "current" }), headers: @author_headers
+    assert_response :success
+    response_json = response.parsed_body["posts"]
+
+    assert_equal [@post.id], response_json.map { |post| post["id"] }
+  end
+
+  def test_filter_posts_by_status
+    create(:post, status: "draft", author: @author)
+
+    get posts_path(filters: { status: "published" }), headers: @author_headers
+    assert_response :success
+    response_json = response.parsed_body["posts"]
+
+    assert_equal [@post.id], response_json.map { |post| post["id"] }
+  end
+
+  def test_filter_posts_by_title
+    post1 = create(:post, title: "Learn Ruby", author: @author)
+    create(:post, title: "Learn Python", author: @author)
+
+    get posts_path(filters: { title: "ruby" }), headers: @author_headers
+    assert_response :success
+    response_json = response.parsed_body["posts"]
+
+    assert_equal [post1.id], response_json.map { |post| post["id"] }
+  end
+
+  def test_bulk_update_fails_with_invalid_slugs
+    invalid_slugs = [ @post.slug + "-nonexistent-slug1", @post.slug + "-nonexistent-slug2"]
+    update_fields = { status: "draft" }
+
+    put bulk_update_posts_path,
+      params: {
+        posts: {
+          slugs: invalid_slugs,
+          update_fields:
+        }
+      },
+      headers: @author_headers
+
+    response_json = response.parsed_body
+    assert_equal "No posts found with the provided slugs", response_json["error"]
+  end
+
+  def test_bulk_destroy_fails_with_invalid_slugs
+    invalid_slugs = [ @post.slug + "-nonexistent-slug1", @post.slug + "-nonexistent-slug2"]
+    payload = { posts: { slugs: invalid_slugs } }
+
+    assert_no_difference "Post.count" do
+      delete bulk_destroy_posts_path, params: payload, headers: @author_headers
+    end
+
+    response_body = JSON.parse(response.body)
+    assert_equal "No posts found with the provided slugs", response_body["error"]
   end
 end
