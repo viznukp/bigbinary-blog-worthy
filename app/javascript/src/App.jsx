@@ -7,6 +7,7 @@ import { ToastContainer } from "react-toastify";
 import { Signup, Login } from "components/Authentication";
 import { PrivateRoute } from "components/commons";
 import Home from "components/Home";
+import MyPostList from "components/MyPostList";
 import Create from "components/Posts/Create";
 import Edit from "components/Posts/Edit";
 import Show from "components/Posts/Show";
@@ -25,6 +26,7 @@ const App = () => {
         <Route exact component={Signup} path="/signup" />
         <Route exact component={Login} path="/login" />
         <Route exact component={Edit} path="/posts/:slug/edit" />
+        <Route exact component={MyPostList} path="/posts/mine" />
         <PrivateRoute
           component={Home}
           condition={isLoggedIn}

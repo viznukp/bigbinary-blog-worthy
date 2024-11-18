@@ -44,6 +44,7 @@ const SideBar = () => {
           path="/"
         />
         <SideBarNavItem icon="add-line" label="New" path="/posts/new" />
+        <SideBarNavItem icon="folder-line" label="Mine" path="/posts/mine" />
       </div>
       <div>
         <div ref={avatarRef}>

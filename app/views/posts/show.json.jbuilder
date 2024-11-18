@@ -4,6 +4,7 @@ json.post do
     :title,
     :description,
     :is_blog_worthy,
+    :status,
     :updated_at
 
   json.author do
