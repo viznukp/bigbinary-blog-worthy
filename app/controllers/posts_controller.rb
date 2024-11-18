@@ -35,12 +35,21 @@ class PostsController < ApplicationController
 
   def bulk_update
     update_fields = bulk_update_params[:update_fields]
-    Post.where(slug: bulk_update_params[:slugs]).find_in_batches do |posts|
-      posts.each do |post|
+    posts = Post.where(slug: bulk_update_params[:slugs])
+
+    if posts.empty?
+      skip_authorization
+      render_error("No posts found with the provided slugs") and return
+    end
+
+    posts.find_in_batches do |batch|
+      batch.each do |post|
         authorize post, :update?
+
         if post.status != update_fields[:status]
           post.update!(update_fields)
         end
+
       end
     end
 
@@ -54,7 +63,14 @@ class PostsController < ApplicationController
   end
 
   def bulk_destroy
-    Post.where(slug: bulk_destroy_params[:slugs]).find_in_batches do |posts|
+    posts = Post.where(slug: bulk_destroy_params[:slugs])
+
+    if posts.empty?
+      skip_authorization
+      render_error("No posts found with the provided slugs") and return
+    end
+
+    posts.find_in_batches do |posts|
       posts.each do |post|
         authorize post, :destroy?
         post.destroy!

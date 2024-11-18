@@ -26,12 +26,7 @@ class Post < ApplicationRecord
   validate :slug_not_changed
 
   before_create :set_slug
-
-  def update_blog_worthy_status
-    net_votes = upvotes - downvotes
-    self.is_blog_worthy = net_votes >= Constants::BLOG_WORTHY_THRESHOLD
-    save!
-  end
+  before_save :update_blog_worthy_status
 
   private
 
@@ -58,5 +53,10 @@ class Post < ApplicationRecord
       if slug_changed? && self.persisted?
         errors.add(:slug, I18n.t("post.slug.immutable"))
       end
+    end
+
+    def update_blog_worthy_status
+      net_votes = upvotes - downvotes
+      self.is_blog_worthy = net_votes > Constants::BLOG_WORTHY_THRESHOLD
     end
 end
