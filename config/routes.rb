@@ -6,6 +6,9 @@ Rails.application.routes.draw do
       collection do
         put :bulk_update
         delete :bulk_destroy
+        resource :report, only: %i[create], module: :posts do
+          get :download, on: :collection
+        end
       end
     end
     resources :users, only: :create

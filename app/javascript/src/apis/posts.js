@@ -23,6 +23,11 @@ const destroy = slug => axios.delete(`/posts/${slug}`);
 const bulkDestroy = slugs =>
   axios.delete("/posts/bulk_destroy", { data: { posts: { slugs } } });
 
+const generatePdf = slug => axios.post("/posts/report", { post: { slug } });
+
+const download = () =>
+  axios.get("/posts/report/download", { responseType: "blob" });
+
 const postsApi = {
   fetch,
   create,
@@ -31,6 +36,8 @@ const postsApi = {
   bulkUpdate,
   destroy,
   bulkDestroy,
+  generatePdf,
+  download,
 };
 
 export default postsApi;

@@ -1,0 +1,19 @@
+<div>
+  <h1>
+    <%= @post.title.capitalize %>
+  </h1>
+  <div class="flexrow">
+    <% @post.categories.each do |category| %>
+      <span class="tag"><%= category.name.capitalize %></span>
+    <% end %>
+  </div>
+  <p class="text-gray-500">
+    <span class="border-r pr-2"><%= @post.author.name %></span>
+    <%= formatted_date(@post.updated_at) %>,
+    <%= formatted_time(@post.updated_at)  %>
+  </p>
+
+  <p>
+    <%= @post.description %>
+  </p>
+<div>

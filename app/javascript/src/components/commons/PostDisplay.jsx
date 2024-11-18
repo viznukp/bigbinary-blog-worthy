@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { capitalize } from "@bigbinary/neeto-cist";
-import { Edit } from "@bigbinary/neeto-icons";
+import { Edit, Download } from "@bigbinary/neeto-icons";
 import { Typography, Button, Tag, Tooltip } from "@bigbinary/neetoui";
 import { useParams, useHistory } from "react-router-dom/cjs/react-router-dom";
 
 import { POST_STATUSES } from "components/constants";
-import { dateFromTimeStamp } from "utils/dateTime";
+import DownloadPost from "components/Posts/DownloadPost";
+import { dateFromTimeStamp, timeFromTimeStamp } from "utils/dateTime";
 
 const PostDisplay = ({
   title,
@@ -15,10 +16,12 @@ const PostDisplay = ({
   categories = [],
   author = {},
   updatedAt,
-  editButtonEnabled = false,
+  editEnabled = false,
+  downloadEnabled = false,
 }) => {
   const history = useHistory();
   const { slug } = useParams();
+  const [isDownloadActive, setIsDownloadActive] = useState(false);
 
   return (
     <>
@@ -36,18 +39,32 @@ const PostDisplay = ({
             />
           )}
         </div>
-        {editButtonEnabled && (
-          <div className="h-16 w-16">
-            <Tooltip content="Edit" position="top">
-              <Button
-                icon={Edit}
-                size="large"
-                style="text"
-                onClick={() => history.push(`/posts/${slug}/edit`)}
-              />
-            </Tooltip>
-          </div>
-        )}
+        <div className="flex">
+          {editEnabled && (
+            <div className="h-16 w-16">
+              <Tooltip content="Edit" position="top">
+                <Button
+                  icon={Edit}
+                  size="large"
+                  style="text"
+                  onClick={() => history.push(`/posts/${slug}/edit`)}
+                />
+              </Tooltip>
+            </div>
+          )}
+          {downloadEnabled && (
+            <div className="h-16 w-16">
+              <Tooltip content="Download as PDF" position="top">
+                <Button
+                  icon={Download}
+                  size="large"
+                  style="text"
+                  onClick={() => setIsDownloadActive(true)}
+                />
+              </Tooltip>
+            </div>
+          )}
+        </div>
       </div>
       <div className="flex gap-2 py-2">
         {categories?.map(({ id, name }) => (
@@ -61,9 +78,15 @@ const PostDisplay = ({
         {author.name}
       </Typography>
       <Typography className="inline-block pr-2 text-xs  text-gray-400">
-        {dateFromTimeStamp(updatedAt)}
+        {`${dateFromTimeStamp(updatedAt)}, ${timeFromTimeStamp(updatedAt)} `}
       </Typography>
       <Typography className="mt-3">{description}</Typography>
+      {isDownloadActive && (
+        <DownloadPost
+          slug={slug}
+          onDownloadComplete={() => setIsDownloadActive(false)}
+        />
+      )}
     </>
   );
 };

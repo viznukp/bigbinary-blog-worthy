@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+  </head>
+  <style>
+    .flexrow {
+      display: -webkit-box;
+      display: -webkit-flex;
+      display: flex;
+    }
+
+    .flexrow > div {
+      -webkit-box-flex: 1;
+      -webkit-flex: 1;
+      flex: 1;
+    }
+
+    .flexrow > div:last-child {
+      margin-right: 0;
+    }
+
+    .tag {
+      padding: 0.25rem 1rem;
+      background-color: #d3f9e8;
+      border-radius: 16px;
+    }
+
+    .border-r{
+      border-right: 1px solid #d8dcde;
+    }
+
+    .pr-2{
+      padding-right: 2px;
+    }
+
+    .text-gray-500{
+      color: #87929d
+    }
+
+  </style>
+  <body onload="number_pages">
+    <div id="header"></div>
+    <div id="content"><%= yield %></div>
+  </body>
+</html>
